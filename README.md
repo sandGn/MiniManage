@@ -29,7 +29,8 @@ yarn build
 
 ##### 	运行依赖
 
-- ant-design-vue
+- ant-design-vue                               # ui库
+- axios                                        # promise 的 HTTP 库
 
 ##### 	开发依赖
 
@@ -41,6 +42,8 @@ yarn build
 
 ```bash
 ┌──
+├── config                     # 项目基础配置，包含路由，全局设置
+│   │── router.config.js       # 路由配置
 ├── dist                       # 构建打包目录
 ├── mock                       # 项目mock 模拟数据
 ├── public                     # 静态资源
@@ -50,7 +53,6 @@ yarn build
 │   ├── api                    # Ajax api请求
 │   ├── assets                 # 主题 字体等本地静态资源
 │   ├── components             # 全局公用组件
-│   ├── config                 # 项目基础配置，包含路由，全局设置
 │   ├── layouts                # 通用布局
 │   ├── router                 # 路由 Vue-Router
 │   ├── store                  # 全局 store管理 Vuex
