@@ -64,7 +64,9 @@
         @toggle="toggle"
       ></global-header>
       <!-- 内容 -->
-      <a-layout-content>
+      <a-layout-content
+        :style="{ height: '100%', margin: '24px 24px 0', paddingTop: fixedHeader ? '64px' : '0' }"
+      >
         <route-view />
       </a-layout-content>
       <!-- 底部 -->
@@ -72,7 +74,7 @@
         <global-footer />
       </a-layout-footer>
 
-      <setting-drawer/>
+      <setting-drawer />
     </a-layout>
   </a-layout>
 </template>
@@ -111,7 +113,8 @@ export default {
       fixedLeftMenu: state => state.app.fixedLeftMenu,
       contentWidth: state => state.app.contentWidth,
       layout: state => state.app.layout,
-      leftMenuOpen: state => state.app.leftMenuOpen
+      leftMenuOpen: state => state.app.leftMenuOpen,
+      fixedHeader: state => state.app.fixedHeader
     }),
     contentPaddingLeft() {
       if (!this.fixedLeftMenu || this.isMobile()) {

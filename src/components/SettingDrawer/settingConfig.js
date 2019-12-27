@@ -44,7 +44,7 @@ const updateTheme = newPrimaryColor => {
   themeColor.changeColor(newPrimaryColor).finally(() => {
     setTimeout(() => {
       hideMessage()
-    })
+    },500)
   })
 }
 //色弱模式

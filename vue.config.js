@@ -1,3 +1,4 @@
+const createThemeColorReplacerPlugin = require('./config/plugin.config')
 const path = require('path')
 
 function resolve (dir) {
@@ -10,6 +11,9 @@ module.exports = {
                 javascriptEnabled: true,
             }
         }
+    },
+    configureWebpack: {
+        plugins: [createThemeColorReplacerPlugin()]
     },
     chainWebpack: (config) => {
         config.resolve.alias

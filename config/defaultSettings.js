@@ -29,7 +29,7 @@ export default {
     //主题，整体风格 ['dark', 'light'] 两种颜色
     theme: 'dark',
     //主题色
-    primaryColor: '#52C41A',
+    primaryColor: '#1890FF',
 
     layout: 'leftmenu', //导航模式 ['leftmenu 左侧导航', 'topmenu 顶部导航'] 两种
     fixedLeftMenu: false, //固定左侧菜单栏 导航布局 topmenu 时设置生效

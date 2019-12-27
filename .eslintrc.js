@@ -9,7 +9,8 @@ module.exports = {
   ],
   rules: {
     // 是否允许代码中存在console
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    //'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': 'off',
     // 是否允许代码中存在debugger
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // 分号

@@ -1,4 +1,4 @@
-import { BasicLayout } from '../src/layouts'
+import { BasicLayout,PageView } from '../src/layouts'
 
 // export const asyncRouterMap = [
 //   {
@@ -40,25 +40,40 @@ export const constantRouterMap = [
     path: '/',
     name: 'index',
     component: BasicLayout,
-    // meta: { title: '首页' },
+    meta: { title: '首页' },
     // redirect: '/dashboard/workplace',
-    // children: [
-    //   {
-    //     //登录
-    //     path: 'login',
-    //     name: 'login',
-    //     component: () => import('@/views/user/Login')
-    //   },
-    //   {
-    //     path: 'register',
-    //     name: 'register',
-    //     component: () => import('@/views/user/Register')
-    //   },
-    //   {
-    //     path: 'register-result',
-    //     name: 'registerResult',
-    //     component: () => import('@/views/user/RegisterResult')
-    //   }
-    // ]
+    children: [
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        redirect: '/dashboard/workplace',
+        component: PageView,
+        meta: { title: '仪表盘', keepAlive: true, icon: 'table', permission: ['dashboard'] },
+        children: [
+          {
+            path: '/dashboard/workplace',
+            name: 'Workplace',
+            component: () => import('@/views/dashboard/Workplace'),
+            meta: { title: '工作台', keepAlive: true, permission: ['dashboard'] }
+          },
+        ]
+      },
+      // {
+      //   //登录
+      //   path: 'login',
+      //   name: 'login',
+      //   component: () => import('@/views/user/Login')
+      // },
+      // {
+      //   path: 'register',
+      //   name: 'register',
+      //   component: () => import('@/views/user/Register')
+      // },
+      // {
+      //   path: 'register-result',
+      //   name: 'registerResult',
+      //   component: () => import('@/views/user/RegisterResult')
+      // }
+    ]
   }
 ]
