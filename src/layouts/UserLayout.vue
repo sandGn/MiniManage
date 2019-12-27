@@ -1,14 +1,14 @@
 <!-- 登陆注册页面的通用布局 -->
 <template>
-  <div>
+  <div id="userLayout" class="user-layout-wrapper">
     <div class="container">
       <div class="content">
         <!-- 标题  -->
         <div class="top">
           <div class="header">
             <a href="/">
-              <img alt="logo" class="logo" src="@/assets/img/vue-antd-logo.png" />
-              <span class="title">123</span>
+              <img alt="logo" class="logo" src="~@/assets/logo.svg" />
+              <span class="title">Ant Design</span>
             </a>
           </div>
           <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>

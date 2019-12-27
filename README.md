@@ -33,14 +33,15 @@ yarn build
 ant-design-vue				# ui库
 axios						# promise 的 HTTP 库
 vue-ls						# vue 本地存储插件
-	
-
+enquire						# JavaScript 实现的 CSS 媒体查询库
+vue-svg-component-runtime	# svg 配置成组件使用
 ```
 ##### 	开发依赖
 
 - babel-plugin-import
 - less
 - less-loader
+- vue-svg-icon-loader
 
 ### 目录结构
 

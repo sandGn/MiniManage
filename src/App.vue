@@ -1,33 +1,35 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>|
-      <router-link to="/about">About</router-link>
-    </div>
-    <a-button type="primary">Button></a-button>
     <router-view />
   </div>
 </template>
+<script>
+import { deviceEnquire, DEVICE_TYPE } from '../src/utils/device'
+import { TOGGLE_DEVICE } from './store/mutation-types'
 
+export default {
+  mounted() {
+    deviceEnquire(deviceType => {
+      // console.log('deviceType', deviceType)
+      this.$store.commit(TOGGLE_DEVICE, deviceType)
+      switch (deviceType) {
+        case DEVICE_TYPE.DESKTOP:
+          this.$store.dispatch('setLeftMenuOpen', true)
+          break
+        case DEVICE_TYPE.TABLET:
+          this.$store.dispatch('setLeftMenuOpen', false)
+          break
+        case DEVICE_TYPE.MOBILE:
+        default:
+          this.$store.dispatch('setLeftMenuOpen', true)
+          break
+      }
+    })
+  }
+}
+</script>
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  height: 100%;
 }
 </style>

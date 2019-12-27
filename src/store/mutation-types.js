@@ -1,0 +1,19 @@
+/*
+ * Mutation 事件类型常量
+ */
+
+//站点 app
+export const TOGGLE_DEVICE = 'toggle_device'
+export const SET_LEFT_MENU_OPEN = 'set_left_menu_open'
+export const TOGGLE_THEME = 'toggle_theme'
+export const TOGGLE_PRIMARY_COLOR = 'toggle_primary_color'
+
+export const TOGGLE_LAYOUT = 'toggle_layout'
+export const TOGGLE_FIXED_LEFT_MENU = 'toggle_fixed_left_menu'
+export const TOGGLE_CONTENT_WIDTH = 'toggle_content_width'
+
+export const TOGGLE_FIXED_HEADER = 'toggle_fixed_header'
+export const TOGGLE_HIDDEN_FIXED_HEADER = 'toggle_hidden_fixed_header'
+
+export const TOGGLE_COLOR_WEAK = 'toggle_color_weak'
+export const TOGGLE_MULTI_TAB = 'toggle_multi_tab'
