@@ -47,29 +47,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import SMenu from '../Menu/menu'
 import UserMenu from './UserMenu'
 import LogoSvg from '../../assets/logo.svg?inline'
+import { mixin } from '../../utils/mixin'
 export default {
   name: 'GlobalHeader',
+  mixins: [mixin],
   components: {
     SMenu,
     UserMenu,
     LogoSvg
   },
   props: {
-    //导航布局
-    layout: {
-      type: String,
-      default: 'leftmenu'
-    },
-    //访问设备
-    device: {
-      type: String,
-      required: false,
-      default: 'desktop'
-    },
     //是否收起
     collapsed: {
       type: Boolean,
@@ -87,16 +77,6 @@ export default {
       visible: true
     }
   },
-
-  computed: {
-    ...mapState({
-      fixedHeader: state => state.app.fixedHeader,
-      leftMenuOpen: state => state.app.leftMenuOpen,
-      theme: state => state.app.theme,
-      siteName: state => state.app.siteName
-    })
-  },
-
   watch: {},
 
   methods: {

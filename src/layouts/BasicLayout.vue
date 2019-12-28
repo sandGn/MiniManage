@@ -57,8 +57,6 @@
     >
       <!-- 头部 -->
       <global-header
-        :layout="layout"
-        :device="device"
         :collapsed="collapsed"
         :menus="menus"
         @toggle="toggle"
@@ -84,13 +82,14 @@ import GlobalHeader from '../components/GlobalHeader/GlobalHeader'
 import GlobalFooter from '../components/GlobalFooter/GlobalFooter'
 import SettingDrawer from '../components/SettingDrawer/SettingDrawer'
 import RouteView from './RouteView'
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import LogoSvg from '../assets/logo.svg?inline'
 import SMenu from '../components/Menu/menu'
-import { DEVICE_TYPE } from '@/utils/device'
 
+import { mixin } from '../utils/mixin'
 export default {
   name: 'BasicLayout',
+  mixins: [mixin],
   components: {
     GlobalHeader,
     GlobalFooter,
@@ -106,16 +105,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      device: state => state.app.device,
-      siteName: state => state.app.siteName,
-      theme: state => state.app.theme,
-      fixedLeftMenu: state => state.app.fixedLeftMenu,
-      contentWidth: state => state.app.contentWidth,
-      layout: state => state.app.layout,
-      leftMenuOpen: state => state.app.leftMenuOpen,
-      fixedHeader: state => state.app.fixedHeader
-    }),
     contentPaddingLeft() {
       if (!this.fixedLeftMenu || this.isMobile()) {
         return '0'
@@ -162,22 +151,8 @@ export default {
     //关闭移动端抽屉
     drawerClose() {
       this.collapsed = false
-    },
-    isMobile() {
-      return this.device === DEVICE_TYPE.MOBILE
-    },
-    isDesktop() {
-      return this.device === DEVICE_TYPE.DESKTOP
-    },
-    isTablet() {
-      return this.device === DEVICE_TYPE.TABLET
-    },
-    isTopMenu() {
-      return this.layout === 'topmenu'
-    },
-    isLeftMenu() {
-      return !this.isTopMenu()
     }
+
   }
 }
 </script>
