@@ -1,7 +1,6 @@
-
-/**
+/*
  * 监控屏幕宽度
- **/
+ */
 
 import enquireJs from 'enquire.js'
 
