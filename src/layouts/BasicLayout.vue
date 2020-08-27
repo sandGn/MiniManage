@@ -71,8 +71,8 @@
       <a-layout-footer>
         <global-footer />
       </a-layout-footer>
-
-      <setting-drawer />
+      <!-- 设置抽屉（以开发模式显示） -->
+      <setting-drawer v-if="!production" />
     </a-layout>
   </a-layout>
 </template>
@@ -85,6 +85,8 @@ import RouteView from './RouteView'
 import { mapActions } from 'vuex'
 import LogoSvg from '../assets/logo.svg?inline'
 import SMenu from '../components/Menu/menu'
+//import { constantRouterMap } from '../../config/router.config.js'
+import config from '../../config/defaultSettings'
 
 import { mixin } from '../utils/mixin'
 export default {
@@ -101,7 +103,8 @@ export default {
   data() {
     return {
       collapsed: false, //菜单抽屉是否可见
-      menus: [] //菜单
+      menus: [], //菜单
+      production:config.production
     }
   },
   computed: {
@@ -121,8 +124,8 @@ export default {
     }
   },
   created() {
-    //this.menus = asyncRouterMap.find(item => item.path === '/').children
-    //this.menus = this.mainMenu.find(item => item.path === '/').children
+    //this.menus = constantRouterMap.find(item => item.path === '/').children
+    this.menus = this.mainMenu.find(item => item.path === '/').children
     this.collapsed = !this.leftMenuOpen
   },
   mounted() {

@@ -3,5 +3,6 @@
  */
 const getters = {
     device: state => state.app.device,
+    roles: state => state.user.roles,
 }
 export default getters

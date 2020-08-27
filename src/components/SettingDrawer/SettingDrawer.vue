@@ -404,7 +404,7 @@ export const config {
 }
 
 .setting-drawer-index-handle {
-  position: absolute;
+  position: fixed;
   top: 240px;
   background: #1890ff;
   width: 48px;

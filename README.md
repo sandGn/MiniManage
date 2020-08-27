@@ -10,6 +10,10 @@ yarn serve
 yarn build
 ```
 
+### 本地打包预览
+
+serve dist（需要本地安装 serve 包）
+
 #### 环境
 
 - node
@@ -35,6 +39,7 @@ axios						# promise 的 HTTP 库
 vue-ls						# vue 本地存储插件
 enquire						# JavaScript 实现的 CSS 媒体查询库
 vue-svg-component-runtime	# svg 配置成组件使用
+lodash.get					# JavaScript 实用工具库
 ```
 ##### 	开发依赖
 

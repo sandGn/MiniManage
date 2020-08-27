@@ -41,6 +41,7 @@ export default {
 
     colorWeak: false, //色盲模式
     multiTab: false, //多(页签)标签 模式：boolean
+    production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true', //是否生产环境
     //Vue-ls 插件配置项
     storageOptions: {
         namespace: 'Sand__', // key prefix

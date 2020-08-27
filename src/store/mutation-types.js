@@ -17,3 +17,6 @@ export const TOGGLE_HIDDEN_FIXED_HEADER = 'toggle_hidden_fixed_header'
 
 export const TOGGLE_COLOR_WEAK = 'toggle_color_weak'
 export const TOGGLE_MULTI_TAB = 'toggle_multi_tab'
+
+//用户 user
+export const ACCESS_TOKEN = 'access_token' // 用户token
