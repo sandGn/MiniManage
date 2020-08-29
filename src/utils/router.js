@@ -4,7 +4,7 @@ export function generateIndexRouter(data) {
     path: '/',
     name: 'dashboard',
     //component: () => import('@/components/layouts/BasicLayout'),
-    component: resolve => require(['@/components/layouts/TabLayout'], resolve),
+    component: resolve => require(['@/views/company/CompanyInfo'], resolve),
     meta: { title: '首页' },
     redirect: '/dashboard/analysis',
     children: [

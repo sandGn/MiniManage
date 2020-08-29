@@ -20,3 +20,5 @@ export const TOGGLE_MULTI_TAB = 'toggle_multi_tab'
 
 //用户 user
 export const ACCESS_TOKEN = 'access_token' // 用户token
+export const USER_NAME = 'user_name' //用户名称
+export const USER_INFO = 'user_info'

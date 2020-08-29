@@ -1,9 +1,12 @@
 /*
  * 路由配置管理
  */
-import { BasicLayout, UserLayout, PageView } from '../src/layouts'
+import { BasicLayout, UserLayout, PageView, RouteView } from '../src/layouts'
 
-
+/**
+ * 动态路由
+ * @type {[null,null]}
+ */
 export const asyncRouterMap = [
   {
     path: '/',
@@ -12,127 +15,153 @@ export const asyncRouterMap = [
     meta: { title: '首页' },
     redirect: '/company',
     children: [
-      //企业信息
+      //企业管理
       {
-        path:'/company',
-        name:'company',
-        component: () => import('@/views/company/Company'),
-        meta:{ title: '企业信息', keepAlive: true, icon: 'solution', permission: ['company'] }
-      },
-      // 用户管理
-      {
-        path: '/user',
-        name: 'user',
-        redirect: '/user/userlist',
-        component: PageView,
-        meta: { title: '员工管理', keepAlive: true, icon: 'team', permission: ['user'] },
+        path: '/company',
+        name: 'company',
+        redirect: '/company/companyinfo',
+        component: RouteView,
+        meta: { title: '企业管理', keepAlive: true, icon: 'solution', permission: ['COMPANY_MANAGE'] },
         children: [
+          //企业信息
           {
-            //员工信息
-            path: '/user/userlist',
-            name: 'Userlist',
-            component: () => import('@/views/user/Userlist'),
-            meta: { title: '员工信息', keepAlive: true, permission: ['user'] }
-          },
+            path: '/company/companyinfo',
+            name: 'CompanyInfo',
+            component: () => import('@/views/company/CompanyInfo'),
+            meta: { title: '企业信息', keepAlive: true, permission: ['COMPANY_DETAIL'] },
+          }
+        ],
+      },
+      // 用户/员工管理
+      {
+        path: '/account',
+        name: 'account',
+        redirect: '/account/accountauditlist',
+        component: PageView,
+        meta: { title: '员工管理', keepAlive: true, icon: 'team', permission: ['ACCOUNT_MANAGE'] },
+        children: [
+          // 员工申请列表
           {
-            //角色管理
-            path: '/user/rolelist',
-            name: 'Rolelist',
-            component: () => import('@/views/user/Rolelist'),
-            meta: { title: '角色管理', keepAlive: true, permission: ['user'] }
+            path: '/account/accountauditlist',
+            name: 'AccountAuditList',
+            component: () => import('@/views/account/AccountAuditList'),
+            meta: { title: '员工申请列表', keepAlive: true, permission: ['ACCOUNT_AUDIT_LIST'] }
           },
-          // {
-          //   //权限管理
-          //   path: '/user/permissionlist',
-          //   name: 'Permissionlist',
-          //   component: () => import('@/views/user/Permissionlist'),
-          //   meta: { title: '权限管理', keepAlive: true, permission: ['user'] }
-          // },
+          //员工列表
+          {
+            path: '/account/accountlist',
+            name: 'AccountList',
+            component: () => import('@/views/account/AccountList'),
+            meta: { title: '员工列表', keepAlive: true, permission: ['ACCOUNT_LIST'] }
+          },
+          //岗位管理
+          {
+            path: '/user/dutylist',
+            name: 'DutyList',
+            component: () => import('@/views/account/DutyList'),
+            meta: { title: '岗位管理', keepAlive: true, permission: ['ACCOUNT_DUTY_LIST'] }
+          },
         ]
       },
+      //车辆管理
       {
         path: '/car',
         name: 'car',
         redirect: '/car/carlist',
         component: PageView,
-        meta: { title: '车辆管理', keepAlive: true, icon: 'car', permission: ['car'] },
+        meta: { title: '车辆管理', keepAlive: true, icon: 'car', permission: ['CAR_MANAGE'] },
         children: [
+          //车辆列表
           {
-            //车辆信息
             path: '/car/carlist',
-            name: 'Carlist',
-            component: () => import('@/views/car/Carlist'),
-            meta: { title: '车辆信息', keepAlive: true, permission: ['car'] }
+            name: 'CarList',
+            component: () => import('@/views/car/CarList'),
+            meta: { title: '车辆列表', keepAlive: true, permission: ['CAR_LIST'] }
           },
+          //司机管理
           {
-            //司机管理
             path: '/car/driverlist',
-            name: 'Driverlist',
-            component: () => import('@/views/car/Driverlist'),
-            meta: { title: '司机管理', keepAlive: true, permission: ['car'] }
+            name: 'DriverList',
+            component: () => import('@/views/car/DriverList'),
+            meta: { title: '司机列表', keepAlive: true, permission: ['CAR_DRIVER_LIST'] }
           },
+          //车辆设置 【点检、保养项目设置】
           {
-            //点检项目管理
-            path: '/car/checkitem',
-            name: 'Checkitem',
-            component: () => import('@/views/car/Checkitem'),
-            meta: { title: '点检项目管理', keepAlive: true, permission: ['car'] }
+            path: '/car/carsetting',
+            name: 'CarSetting',
+            component: () => import('@/views/car/CarSetting'),
+            meta: { title: '车辆设置', keepAlive: true, permission: ['CAR_SETTING'] }
           },
+          //车辆记录 【出入车、点检、保养、加油...】
           {
-            //保养项目管理
-            path: '/car/maintenanceitem',
-            name: 'Maintenanceitem',
-            component: () => import('@/views/car/Maintenanceitem'),
-            meta: { title: '保养项目管理', keepAlive: true, permission: ['car'] }
-          },
+            path: '/car/carrecord',
+            name: 'CarRecord',
+            component: () => import('@/views/car/CarRecord'),
+            meta: { title: '车辆记录', keepAlive: true, permission: ['CAR_RECORD'] }
+          }
         ]
       },
+      //食堂管理
       {
-        path: '/alert',
-        name: 'alert',
-        redirect: '/alert/alert',
+        path: '/canteen',
+        name: 'canteen',
+        //redirect: '/canteen',
         component: PageView,
-        meta: { title: '预警提醒', keepAlive: true, icon: 'alert', permission: ['alert'] },
+        meta: { title: '食堂管理', keepAlive: true, icon: 'alert', permission: ['CANTEEN_MANAGE'] },
         children: [],
       },
+      //宿舍管理
+      {
+        path: '/dormitory',
+        name: 'dormitory',
+        //redirect: '/dormitory',
+        component: PageView,
+        meta: { title: '宿舍管理', keepAlive: true, icon: 'alert', permission: ['DORMITORY_MANAGE'] },
+        children: [],
+      },
+      //卫生管理
+      {
+        path: '/hygiene',
+        name: 'hygiene',
+        //redirect: '/dormitory',
+        component: PageView,
+        meta: { title: '卫生管理', keepAlive: true, icon: 'alert', permission: ['HYGIENE_MANAGE'] },
+        children: [],
+      },
+      //订单管理
       {
         path: '/order',
         name: 'order',
-        redirect: '/order/',
+        redirect: '/order/orderlist',
         component: PageView,
-        meta: { title: '订单管理', keepAlive: true, icon: 'pay-circle', permission: ['order'] },
-        children: [],
+        meta: { title: '订单管理', keepAlive: true, icon: 'pay-circle', permission: ['ORDER_MANAGE'] },
+        children: [
+          // 订单列表
+          {
+            path: '/order/orderlist',
+            name: 'OrderList',
+            component: () => import('@/views/order/OrderList'),
+            meta: { title: '订单列表', keepAlive: true, permission: ['ORDER_LIST'] }
+          },
+        ],
       },
+      //系统管理
       {
-        path: '/sys',
-        name: 'sys',
-        redirect: '/sys/setting',
+        path: '/system',
+        name: 'system',
+        redirect: '/system/actionloglist',
         component: PageView,
-        meta: { title: '系统工具', keepAlive: true, icon: 'setting', permission: ['sys'] },
-        children: [],
+        meta: { title: '系统管理', keepAlive: true, icon: 'setting', permission: ['SYSTEM_MANAGE'] },
+        children: [
+          // 操作日志
+          {
+            path: '/system/actionloglist',
+            name: 'ActionLogList',
+            component: () => import('@/views/system/ActionLogList'),
+            meta: { title: '操作日志', keepAlive: true, permission: ['ACTION_LOG_LIST'] }
+          },
+        ],
       }
-
-
-
-
-
-      // // 仪表盘-模板
-      // {
-      //   path: '/dashboard',
-      //   name: 'dashboard',
-      //   redirect: '/dashboard/workplace',
-      //   component: RouteView,
-      //   meta: { title: '员工管理', keepAlive: true, icon: 'dashboard', permission: ['dashboard'] },
-      //   children: [
-      //     {
-      //       //工作台
-      //       path: '/dashboard/workplace',
-      //       name: 'Workplace',
-      //       component: () => import('@/views/dashboard/Workplace'),
-      //       meta: { title: '员工信息', keepAlive: true, permission: ['dashboard'] }
-      //     }
-      //   ]
-      // }
     ]
   }
 ]
@@ -151,8 +180,8 @@ export const constantRouterMap = [
       {
         path: 'login',
         name: 'login',
-        component: () => import('@/views/login/Login')
-      }
+        component: () => import('@/views/user/Login')
+      },
     ]
   },
   {

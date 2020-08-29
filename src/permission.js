@@ -5,11 +5,11 @@ import Vue from 'vue'
 import router from './router'
 import store from './store'
 import { ACCESS_TOKEN } from './store/mutation-types'
-import { generateIndexRouter } from '@/utils/util'
+import { generateIndexRouter } from './utils/router'
 
 
 const whiteList = ['login', 'mertregister', 'userregister', 'registerresult']
-const defaultRoutePath = ''
+const defaultRoutePath = '/company/companyinfo'
 
 // to: Route: 即将要进入的目标 路由对象
 // from: Route: 当前导航正要离开的路由
@@ -19,6 +19,7 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/user/login') {
       next({ path: defaultRoutePath })
     } else {
+      console.log(store.getters.permissionList)
       if (store.getters.permissionList.length === 0) {
         //根据 token 获取 权限
         store.dispatch('GetPermissionList').then(res => {
@@ -50,7 +51,8 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    if (whiteList.indexOf(to.path) !== -1) {
+    //if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.includes(to.name)) {
       // 在免登录白名单，直接进入
       next()
     } else {
