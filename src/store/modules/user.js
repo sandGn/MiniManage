@@ -17,6 +17,7 @@ const user = {
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
+          debugger
           if (response.code === '200') {
             const result = response.data
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)

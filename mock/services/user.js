@@ -10,8 +10,9 @@ const login = (options) => {
   console.log('登录参数', options)
   const body = getBody(options)
   console.log('mock: body', body)
+  debugger
   if (!username.includes(body.username) || !password.includes(body.password)) {
-    return builder({ isLogin: true }, '账户或密码错误', 401)
+    return builder({ isLogin: true }, '账户或密码错误', '403')
   }
   return builder({
     'id': Mock.mock('@guid'),
@@ -30,7 +31,7 @@ const login = (options) => {
     //'roleId': 'admin',
     'lang': 'zh-CN',
     'token': '4291d7da9005377ec9aec4a71ea837f'
-  }, '', 200, { 'Custom-Header': Mock.mock('@guid') })
+  }, '', '200', { 'Custom-Header': Mock.mock('@guid') })
 }
 
 /**

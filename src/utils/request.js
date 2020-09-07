@@ -18,12 +18,14 @@ const err = (error) => {
     if (error.response) {
         const data = error.response.data
         //const token = Vue.ls.get(ACCESS_TOKEN)
+        //403 服务器无权限
         if (error.response.status === 403) {
             notification.error({
                 message: 'Forbidden',
                 description: data.message
             })
         }
+        //401 用户无权限Token
         if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
             notification.error({
                 message: 'Unauthorized',
