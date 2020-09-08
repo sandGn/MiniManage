@@ -19,12 +19,14 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/user/login') {
       next({ path: defaultRoutePath })
     } else {
-      console.log(store.getters.permissionList)
+      //console.log(store.getters.permissionList)
       if (store.getters.permissionList.length === 0) {
         //根据 token 获取 权限
         store.dispatch('GetPermissionList').then(res => {
-          const permissionData = res.data.permissions
-
+          const permissionData = res
+          if (permissionData && permissionData.length === 0) {
+            return
+          }
           let constRoutes = generateIndexRouter(permissionData)
           // 添加主界面路由
           store.dispatch('UpdateAppRouter', { constRoutes }).then(() => {

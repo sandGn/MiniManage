@@ -56,11 +56,7 @@
       :style="{ paddingLeft: contentPaddingLeft, minHeight: '100vh' }"
     >
       <!-- 头部 -->
-      <global-header
-        :collapsed="collapsed"
-        :menus="menus"
-        @toggle="toggle"
-      ></global-header>
+      <global-header :collapsed="collapsed" :menus="menus" @toggle="toggle"></global-header>
       <!-- 内容 -->
       <a-layout-content
         :style="{ height: '100%', margin: '24px 24px 0', paddingTop: fixedHeader ? '64px' : '0' }"
@@ -82,7 +78,7 @@ import GlobalHeader from '../components/GlobalHeader/GlobalHeader'
 import GlobalFooter from '../components/GlobalFooter/GlobalFooter'
 import SettingDrawer from '../components/SettingDrawer/SettingDrawer'
 import RouteView from './RouteView'
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import LogoSvg from '../assets/logo.svg?inline'
 import SMenu from '../components/Menu/menu'
 //import { constantRouterMap } from '../../config/router.config.js'
@@ -104,10 +100,14 @@ export default {
     return {
       collapsed: false, //菜单抽屉是否可见
       menus: [], //菜单
-      production:config.production
+      production: config.production
     }
   },
   computed: {
+    ...mapState({
+      // 动态主路由
+      mainMenu: state => state.permission.addRouters
+    }),
     contentPaddingLeft() {
       if (!this.fixedLeftMenu || this.isMobile()) {
         return '0'
@@ -160,5 +160,5 @@ export default {
 }
 </script>
 <style lang="less">
-@import url('../components/global.less');
+@import url("../components/global.less");
 </style>

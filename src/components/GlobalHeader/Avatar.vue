@@ -2,7 +2,11 @@
 <template>
   <a-dropdown>
     <span class="action ant-dropdown-link user-dropdown-menu">
-      <a-avatar class="avatar" size="small" src="https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png" />
+      <a-avatar
+        class="avatar"
+        size="small"
+        src="https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png"
+      />
       <span>Sand</span>
     </span>
     <!-- 下拉菜单 -->
@@ -38,9 +42,12 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'HeaderAvatar',
   methods: {
+    ...mapActions(['Logout']),
+    //...mapGetters(['nickname']),
     //退出登录
     handleLogout() {
       this.$confirm({
@@ -60,7 +67,7 @@ export default {
               })
             })
         },
-        onCancel() {}
+        onCancel() { }
       })
     }
   }

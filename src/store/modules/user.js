@@ -17,15 +17,13 @@ const user = {
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          debugger
-          if (response.code === '200') {
+          if (response.code === 200) {
             const result = response.data
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_INFO, result.userInfo, 7 * 24 * 60 * 60 * 1000)
-            Vue.ls.set(USER_NAME, result.userInfo.userName, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_NAME, result.userInfo.accountName, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', result.userInfo)
-
             resolve(response)
           } else {
             reject(response)
@@ -42,9 +40,9 @@ const user = {
         let params = { token: token }
         const permissionList = []
         queryPermissionsByUser(params).then((response) => {
-          const permissionData = response.data
+          const permissionData = response.data.permission
           if (permissionData && permissionData.length > 0) {
-            permissionData.array.forEach(item => {
+            permissionData.forEach(item => {
               if (item.hasThisModule) {
                 if (item.children.length > 0) {
                   item.children.forEach(children_item => {
@@ -58,7 +56,7 @@ const user = {
           } else {
             reject('获取权限失败!!!')
           }
-          resolve(response)
+          resolve(permissionList)
         }).catch((err) => {
           reject(err)
         })

@@ -1,5 +1,5 @@
 import Mock from 'mockjs2'
-import { builder, getBody, getQueryParameters } from '../util'
+import { builder, getBody } from '../util'
 const username = ['admin', 'mert', 'user', 'account'] //管理员，代理商，商户,用户
 const password = ['e10adc3949ba59abbe56e057f20f883e']               //密码
 
@@ -10,663 +10,269 @@ const login = (options) => {
   console.log('登录参数', options)
   const body = getBody(options)
   console.log('mock: body', body)
-  debugger
   if (!username.includes(body.username) || !password.includes(body.password)) {
     return builder({ isLogin: true }, '账户或密码错误', '403')
   }
   return builder({
-    'id': Mock.mock('@guid'),
-    'name': Mock.mock('@name'),
-    'username': 'admin',
-    'password': '',
-    'avatar': 'https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png',
-    'status': 1,
-    'telephone': '',
-    'lastLoginIp': '27.154.74.117',
-    'lastLoginTime': 1534837621348,
-    'creatorId': 'admin',
-    'createTime': 1497160610259,
-    'deleted': 0,
-    //'roleId': roleId,
-    //'roleId': 'admin',
-    'lang': 'zh-CN',
+    //用户信息
+    'userInfo': {
+      'id': Mock.mock('@guid'),
+      'companyId': Mock.mock('@guid'),
+      'unionid': Mock.mock('@guid'),
+      'userinfoId': Mock.mock('@guid'),
+      'openid': Mock.mock('@guid'),
+      'accountName': 'Sand',
+      'createTime': Mock.mock('@datetime'),
+      'updatedTime': Mock.mock('@datetime'),
+      'realname': '真实姓名',
+      'avatar': 'https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png',
+      'isEnable': 1, //0禁用 1启用
+      'isDelete': 0,//0否 1是
+      'mobile': '15911111111',
+      'email': 'sand.mail@foxmail.com',
+    },
+    //企业信息 数组多个公司多列
+    'companyInfo': [{
+      'id': Mock.mock('@guid'),
+      'companyName': '九州易行科技有限公司',
+      'telephone ': '15911111111',
+      'address': '广东省汕头市龙湖区嵩山路118号潮人创意园A栋718室内',
+      'createTime': Mock.mock('@datetime'),
+      'updatedTime': Mock.mock('@datetime'),
+    }],
     'token': '4291d7da9005377ec9aec4a71ea837f'
-  }, '', '200', { 'Custom-Header': Mock.mock('@guid') })
+  }, '', 200, { 'Custom-Header': Mock.mock('@guid') })
 }
 
 /**
-* 获取用户详细信息
+* 根据token 获取用户权限
 */
-const info = (options) => {
-  const queryParameters = getQueryParameters(options)
-  const userInfo = {
-    'id': '4291d7da9005377ec9aec4a71ea837f',
-    'name': '天野远子',
-    'username': queryParameters.type == 0 ? 'admin' : queryParameters.type == 1 ? 'mert' : 'user',
-    'password': '',
-    'avatar': '/avatar2.jpg',
-    'status': 1,
-    'telephone': '',
-    'lastLoginIp': '27.154.74.117',
-    'lastLoginTime': 1534837621348,
-    'creatorId': 'admin',
-    'createTime': 1497160610259,
-    'merchantCode': 'TLif2btpzg079h15bk',
-    'deleted': 0,
-    'roleId': queryParameters.type == 0 ? 'admin' : queryParameters.type == 1 ? 'mert' : 'user',
-    'role': {}
-  }
-  // 管理员 role
-  const roleObj = {
-    'id': 'admin',
-    'name': '管理员',
-    'describe': '拥有所有权限',
-    'status': 1,
-    'creatorId': 'system',
-    'createTime': 1497160610259,
-    'deleted': 0,
-    'permissions': [
+const getUserPermissionByToken = (options) => {
+  console.log(options)
+  //const queryParameters = getQueryParameters(options)
+  return builder({
+    'permission': [
+      //企业管理
       {
-        'roleId': 'admin',
-        'permissionId': 'account',
-        'permissionName': '用户管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'shop',
-        'permissionName': '店铺管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'agent',
-        'permissionName': '代理商管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'market',
-        'permissionName': '市场管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'audit',
-        'permissionName': '审核管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'import',
-          'describe': '导入',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'data',
-        'permissionName': '数据管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'product',
-        'permissionName': '商品管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'mchrange',
-        'permissionName': '商友圈管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'content',
-        'permissionName': '内容管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }, {
-        'roleId': 'admin',
-        'permissionId': 'power',
-        'permissionName': '权限管理',
-        'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-        'actionEntitySet': [{
-          'action': 'add',
-          'describe': '新增',
-          'defaultCheck': false
-        }, {
-          'action': 'get',
-          'describe': '详情',
-          'defaultCheck': false
-        }, {
-          'action': 'query',
-          'describe': '查询',
-          'defaultCheck': false
-        }, {
-          'action': 'update',
-          'describe': '修改',
-          'defaultCheck': false
-        }, {
-          'action': 'delete',
-          'describe': '删除',
-          'defaultCheck': false
-        }],
-        'actionList': null,
-        'dataAccess': null
-      }]
-  }
-  // 代理商
-  const roleObjMert = {
-    'id': 'mert',
-    'name': '代理商',
-    'describe': '拥有部分权限',
-    'status': 1,
-    'creatorId': 'system',
-    'createTime': 1497160610259,
-    'deleted': 0,
-    'permissions': [{
-      'roleId': 'admin',
-      'permissionId': 'shop',
-      'permissionName': '店铺管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'market',
-      'permissionName': '市场管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'audit',
-      'permissionName': '审核管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'import',
-        'describe': '导入',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'data',
-      'permissionName': '数据管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'product',
-      'permissionName': '商品管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }]
-  }
-  //商户
-  const roleobjUser = {
-    'id': 'user',
-    'name': '商户',
-    'describe': '拥有部分权限',
-    'status': 1,
-    'creatorId': 'system',
-    'createTime': 1497160610259,
-    'deleted': 0,
-    'permissions': [{
-      'roleId': 'admin',
-      'permissionId': 'shop',
-      'permissionName': '店铺管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'audit',
-      'permissionName': '审核管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'import',
-        'describe': '导入',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'data',
-      'permissionName': '数据管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'product',
-      'permissionName': '商品管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'query',
-        'describe': '查询',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }, {
-      'roleId': 'admin',
-      'permissionId': 'mchrange',
-      'permissionName': '商友圈管理',
-      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
-      'actionEntitySet': [{
-        'action': 'add',
-        'describe': '新增',
-        'defaultCheck': false
-      }, {
-        'action': 'get',
-        'describe': '详情',
-        'defaultCheck': false
-      }, {
-        'action': 'update',
-        'describe': '修改',
-        'defaultCheck': false
-      }, {
-        'action': 'delete',
-        'describe': '删除',
-        'defaultCheck': false
-      }],
-      'actionList': null,
-      'dataAccess': null
-    }]
-  }
+        'children': [
+          {
+            'children': [{}],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'COMPANY_DETAIL',
+            'moduleName': '企业信息',
+            'moduleFulename': '企业管理-企业信息',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 1
+          }
+        ],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'COMPANY_MANAGE',
+        'moduleName': '企业管理',
+        'moduleFulename': '企业管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 1
+      },
+      //员工管理
+      {
+        'children': [
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'ACCOUNT_AUDIT_LIST',
+            'moduleName': '员工申请列表',
+            'moduleFulename': '员工管理-员工申请列表',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 1
+          },
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'ACCOUNT_LIST',
+            'moduleName': '员工列表',
+            'moduleFulename': '员工管理-员工列表',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 2
+          },
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'ACCOUNT_DUTY_LIST',
+            'moduleName': '岗位管理',
+            'moduleFulename': '员工管理-岗位管理',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 3
+          },
+        ],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'ACCOUNT_MANAGE',
+        'moduleName': '员工管理',
+        'moduleFulename': '员工管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 2
+      },
+      //车辆管理
+      {
+        'children': [
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'CAR_LIST',
+            'moduleName': '车辆列表',
+            'moduleFulename': '车辆管理-车辆列表',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 1
+          },
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'CAR_DRIVER_LIST',
+            'moduleName': '司机管理',
+            'moduleFulename': '车辆管理-司机管理',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 2
+          },
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'CAR_SETTING',
+            'moduleName': '车辆设置',
+            'moduleFulename': '车辆管理-车辆设置',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 3
+          },
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'CAR_RECORD',
+            'moduleName': '车辆记录',
+            'moduleFulename': '车辆管理-车辆记录',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 4
+          },
+        ],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'CAR_MANAGE',
+        'moduleName': '车辆管理',
+        'moduleFulename': '车辆管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 3
+      },
+      //食堂管理
+      {
+        'children': [],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'CANTEEN_MANAGE',
+        'moduleName': '食堂管理',
+        'moduleFulename': '食堂管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 4
+      },
+      //宿舍管理
+      {
+        'children': [],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'DORMITORY_MANAGE',
+        'moduleName': '宿舍管理',
+        'moduleFulename': '宿舍管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 5
+      },
+      //卫生管理
+      {
+        'children': [],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'HYGIENE_MANAGE',
+        'moduleName': '卫生管理',
+        'moduleFulename': '卫生管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 6
+      },
+      //订单管理
+      {
+        'children': [
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'ORDER_LIST',
+            'moduleName': '订单列表',
+            'moduleFulename': '订单管理-订单列表',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 1
+          },
+        ],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'ORDER_MANAGE',
+        'moduleName': '订单管理',
+        'moduleFulename': '订单管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 7
+      },
+      //系统管理
+      {
+        'children': [
+          {
+            'children': [],
+            'id': Mock.mock('@guid'),
+            'parentId': Mock.mock('@guid'),
+            'moduleCode': 'ACTION_LOG_LIST',
+            'moduleName': '操作日志',
+            'moduleFulename': '系统管理-操作日志',
+            'hasThisModule': true,
+            'isDelete': 0,
+            'sortNo': 1
+          },
+        ],
+        'id': Mock.mock('@guid'),
+        'parentId': Mock.mock('@guid'),
+        'moduleCode': 'SYSTEM_MANAGE',
+        'moduleName': '系统管理',
+        'moduleFulename': '系统管理',
+        'hasThisModule': true,
+        'isDelete': 0,
+        'sortNo': 8
+      },
+    ],
+  }, '', 200, { 'Custom-Header': Mock.mock('@guid') })
+}
 
-  roleObj.permissions.push({
-    'roleId': 'admin',
-    'permissionId': 'support',
-    'permissionName': '超级模块',
-    'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"},{"action":"export","defaultCheck":false,"describe":"导出"}]',
-    'actionEntitySet': [{
-      'action': 'add',
-      'describe': '新增',
-      'defaultCheck': false
-    }, {
-      'action': 'import',
-      'describe': '导入',
-      'defaultCheck': false
-    }, {
-      'action': 'get',
-      'describe': '详情',
-      'defaultCheck': false
-    }, {
-      'action': 'update',
-      'describe': '修改',
-      'defaultCheck': false
-    }, {
-      'action': 'delete',
-      'describe': '删除',
-      'defaultCheck': false
-    }, {
-      'action': 'export',
-      'describe': '导出',
-      'defaultCheck': false
-    }],
-    'actionList': null,
-    'dataAccess': null
-  })
-  if (queryParameters.type == 0)
-    userInfo.role = roleObj
-  else if (queryParameters.type == 1)
-    userInfo.role = roleObjMert
-  else if (queryParameters.type == 2)
-    userInfo.role = roleobjUser
-  return builder(userInfo)
+/**
+* 注销
+*/
+const logout = () => {
+  return builder({}, '[测试接口] 注销成功')
 }
 Mock.mock(/\/login/, 'post', login) //登录
-Mock.mock(/\/user\/info/, 'get', info) //获取用户详细信息
+Mock.mock(/\/sys\/permission/, 'get', getUserPermissionByToken) //根据token 获取用户权限
+Mock.mock(/\/sys\//, 'post', logout) //根据token 获取用户权限

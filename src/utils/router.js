@@ -1,23 +1,34 @@
+import { asyncRouterMap } from '../../config/router.config'
+
+
 // 动态生成路由
 export function generateIndexRouter(data) {
-  let indexRouter = [{
-    path: '/',
-    name: 'dashboard',
-    //component: () => import('@/components/layouts/BasicLayout'),
-    component: resolve => require(['@/views/company/CompanyInfo'], resolve),
-    meta: { title: '首页' },
-    redirect: '/dashboard/analysis',
-    children: [
-      ...generateChildRouters(data)
-    ]
-  }, {
-    'path': '*', 'redirect': '/404', 'hidden': true
-  }]
+  let indexRouter = filterAsyncRouter(asyncRouterMap, data)
   return indexRouter
 }
-// 生成嵌套路由（子路由）
-function generateChildRouters(data) {
-  console.log(data)
-  const routers = []
-  return routers
+
+function filterAsyncRouter(routerMap, roles) {
+  const accessedRouters = routerMap.filter(route => {
+    if (hasPermission(roles, route)) {
+      if (route.children && route.children.length) {
+        route.children = filterAsyncRouter(route.children, roles)
+      }
+      return true
+    }
+    return false
+  })
+  return accessedRouters
+}
+function hasPermission(permission, route) {
+  if (route.meta && route.meta.permission) {
+    let flag = false
+    for (let i = 0, len = permission.length; i < len; i++) {
+      flag = route.meta.permission.includes(permission[i])
+      if (flag) {
+        return true
+      }
+    }
+    return false
+  }
+  return true
 }
