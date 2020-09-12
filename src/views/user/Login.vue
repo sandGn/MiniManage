@@ -143,8 +143,8 @@ export default {
       })
     },
     //登录成功
-    loginSuccess(res) {
-      console.log(JSON.stringify(res))
+    loginSuccess() {
+      //console.log(JSON.stringify(res))
       this.$router.push({ path: '/' }).catch(() => { })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {

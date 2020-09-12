@@ -17,7 +17,7 @@ const user = {
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          if (response.code === 200) {
+          if (response.success) {
             const result = response.data
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_INFO, result.userInfo, 7 * 24 * 60 * 60 * 1000)
@@ -36,10 +36,11 @@ const user = {
     //获取用户权限
     GetPermissionList({ commit }) {
       return new Promise((resolve, reject) => {
-        let token = Vue.ls.get(ACCESS_TOKEN)
-        let params = { token: token }
+        //let token = Vue.ls.get(ACCESS_TOKEN)
+        //let params = { token: token }
         const permissionList = []
-        queryPermissionsByUser(params).then((response) => {
+        queryPermissionsByUser({}).then((response) => {
+          //console.log(JSON.stringify(response))
           const permissionData = response.data.permission
           if (permissionData && permissionData.length > 0) {
             permissionData.forEach(item => {

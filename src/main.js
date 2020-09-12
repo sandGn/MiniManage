@@ -8,7 +8,7 @@ import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.less'
 
 // mock
-import '../mock'
+//import '../mock'
 
 // 本地存储插件
 import VueStorage from 'vue-ls'

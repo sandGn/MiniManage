@@ -26,7 +26,7 @@
         <div class="header-index-wide">
           <div class="header-index-left">
             <div class="logo top-nav-header">
-              <router-link :to="{ name: 'dashboard' }">
+              <router-link :to="{ name: 'index' }">
                 <LogoSvg alt="logo" />
                 <h1 v-if="device !== 'mobile'">{{ siteName }}</h1>
               </router-link>

@@ -4,7 +4,7 @@
 import { getAction } from './index'
 
 //根据用户token获取权限
-const queryPermissionsByUser = (params) => getAction('/sys/permission/getUserPermissionByToken', params)
+const queryPermissionsByUser = (params) => getAction('/account/getUserPermissionByToken', params)
 
 export {
   queryPermissionsByUser

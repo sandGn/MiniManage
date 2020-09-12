@@ -21,7 +21,7 @@
       >
         <!-- logo -->
         <div class="logo">
-          <router-link :to="{name:'dashboard'}">
+          <router-link :to="{name:'index'}">
             <LogoSvg alt="logo" />
             <h1>{{ siteName }}</h1>
           </router-link>
@@ -42,7 +42,7 @@
     >
       <!-- logo -->
       <div class="logo">
-        <router-link :to="{name:'dashboard'}">
+        <router-link :to="{name:'index'}">
           <LogoSvg alt="logo" />
           <h1>{{ siteName }}</h1>
         </router-link>

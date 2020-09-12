@@ -7,7 +7,7 @@ import { axios } from '../utils/request'
 */
 export function login(parameter) {
   return axios({
-    url: '/sys/users/login',
+    url: '/account/login',
     method: 'post',
     data: parameter,
   })
@@ -17,7 +17,7 @@ export function login(parameter) {
 */
 export function logout() {
   return axios({
-    url: '/sys/users/logout',
+    url: '/account/login',
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
