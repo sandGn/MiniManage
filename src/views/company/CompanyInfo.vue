@@ -131,7 +131,7 @@
     <a-card :bordered="false">
       <!-- 企业基本信息 -->
       <detail-list title="基本信息">
-        <a-button type="primary" slot="btnslot">完善</a-button>
+        <a-button type="primary" slot="btnslot" @click="handleEdit()">完善</a-button>
         <detail-list-item term="企业名称(全称)">九州易行科技有限公司</detail-list-item>
         <detail-list-item term="联系电话">15119990718</detail-list-item>
         <detail-list-item term="所在地区">广东省 汕头市 龙湖区</detail-list-item>
@@ -167,20 +167,26 @@
         </detail-list-item>
       </detail-list>
     </a-card>
+
+    <!-- Info区域-end -->
+    <modal-company-info ref="modalForm"></modal-company-info>
   </div>
 </template>
 <script>
+
 import ChartCardIndex from '../../components/Card/ChartCardIndex'
 //import MiniProgress from '../../components/Charts/MiniProgress'
 import DetailList from '../../components/tools/DetailList'
 const DetailListItem = DetailList.Item
+
+import ModalCompanyInfo from './modules/ModalCompanyInfo'
 export default {
   name: 'CompanyInfo',
-  components: { DetailList, DetailListItem, ChartCardIndex },
+  components: { DetailList, DetailListItem, ChartCardIndex, ModalCompanyInfo },
   data() {
     return {
       loading: true,
-      protocolAttachmentlist: []
+      protocolAttachmentlist: [],
     }
   },
   created() {
@@ -189,7 +195,11 @@ export default {
     }, 1000)
   },
   methods: {
-
+    //完善/编辑
+    handleEdit() {
+      this.$refs.modalForm.edit()
+      this.$refs.modalForm.modalSet.title = '编辑'
+    }
   }
 }
 </script>
@@ -218,7 +228,7 @@ export default {
     background: rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: opacity 0.4s;
-    z-index: 9999;
+    z-index: 999;
 
     &:hover {
       opacity: 1;

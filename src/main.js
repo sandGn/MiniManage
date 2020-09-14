@@ -7,6 +7,8 @@ import store from './store'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.less'
 
+//省市联动
+import VueAreaLinkage from 'vue-area-linkage'
 // mock
 //import '../mock'
 
@@ -19,6 +21,7 @@ Vue.config.productionTip = false
 
 Vue.use(Antd)
 Vue.use(VueStorage, config.storageOptions)
+Vue.use(VueAreaLinkage)
 
 new Vue({
   router,
