@@ -126,5 +126,10 @@ export const ListMixin = {
       this.ipagination = pagination
       this.loadData()
     },
+    //新增/修改 成功时，重载列表
+    modalFormOk() {
+      // 新增/修改 成功时，重载列表
+      this.loadData()
+    },
   }
 }

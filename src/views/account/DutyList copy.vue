@@ -13,8 +13,8 @@
           <!-- 筛选 -->
           <a-col :lg="4" :sm="24">
             <span class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery">查询</a-button>
-              <a-button type="primary" style="margin-left: 8px" @click="handleAdd">新建岗位</a-button>
+              <a-button type="primary" @click="searchQuery">筛选</a-button>
+              <a-button type="primary" style="margin-left: 8px" @click="handleAdd">新增</a-button>
             </span>
           </a-col>
         </a-row>
@@ -41,7 +41,7 @@
         >{{ipagination.current*ipagination.pageSize+index+1-ipagination.pageSize}}</span>
         <!-- 操作 -->
         <span slot="action" slot-scope="text,record">
-          <a @click="handleEdit(record)">权限</a>
+          <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete(record)">删除</a>
         </span>
@@ -68,22 +68,6 @@ export default {
         {
           title: '编号',
           scopedSlots: { customRender: 'serialslot' },
-          align: 'center',
-        },
-        {
-          title: '岗位名称',
-          dataIndex: 'roleName',
-          align: 'center',
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createdTime',
-          align: 'center',
-        },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
           align: 'center',
         }
       ],

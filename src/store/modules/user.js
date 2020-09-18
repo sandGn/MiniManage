@@ -22,11 +22,20 @@ const user = {
             const result = response.data
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_INFO, result.userInfo, 7 * 24 * 60 * 60 * 1000)
-            Vue.ls.set(USER_NAME, result.userInfo.accountName, 7 * 24 * 60 * 60 * 1000)
-            Vue.ls.set(COMPANY_INFO, result.companyInfo, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_NAME, result.userInfo.accountName, 7 * 24 * 60 * 60 * 1000)            
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', result.userInfo)
-            commit('SET_COMPANY', result.companyInfo)
+            //commit('SET_COMPANY', result.companyInfo)
+            //取默认启用的企业【后期优化多个企业，弹窗选择进入】
+            if (result.companyInfo.length > 0) {
+              result.companyInfo.forEach(item => {
+                if (item.isDefault == 1) {
+                  commit('SET_COMPANY', item)
+                  Vue.ls.set(COMPANY_INFO, item, 7 * 24 * 60 * 60 * 1000)
+                  return
+                }
+              })          
+            }
             resolve(response)
           } else {
             reject(response)
