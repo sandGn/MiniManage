@@ -37,7 +37,7 @@ export const asyncRouterMap = [
         path: '/account',
         name: 'account',
         redirect: '/account/accountauditlist',
-        component: PageView,
+        component: RouteView,
         meta: { title: '员工管理', keepAlive: true, icon: 'team', permission: ['ACCOUNT_MANAGE'] },
         children: [
           // 员工申请列表
@@ -68,7 +68,7 @@ export const asyncRouterMap = [
         path: '/car',
         name: 'car',
         redirect: '/car/carlist',
-        component: PageView,
+        component: RouteView,
         meta: { title: '车辆管理', keepAlive: true, icon: 'car', permission: ['CAR_MANAGE'] },
         children: [
           //车辆列表
@@ -106,7 +106,7 @@ export const asyncRouterMap = [
         path: '/canteen',
         name: 'canteen',
         //redirect: '/canteen',
-        component: PageView,
+        component: RouteView,
         meta: { title: '食堂管理', keepAlive: true, icon: 'alert', permission: ['CANTEEN_MANAGE'] },
         children: [],
       },
@@ -115,7 +115,7 @@ export const asyncRouterMap = [
         path: '/dormitory',
         name: 'dormitory',
         //redirect: '/dormitory',
-        component: PageView,
+        component: RouteView,
         meta: { title: '宿舍管理', keepAlive: true, icon: 'alert', permission: ['DORMITORY_MANAGE'] },
         children: [],
       },

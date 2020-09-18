@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!reloading" class="area-linkage">
+  <div v-if="!reloading" class="s-area-linkage">
     <area-cascader
       v-if="_type === enums.type[0]"
       :value="innerValue"
@@ -18,6 +18,7 @@
       v-bind="$attrs"
       v-on="_listeners"
       @change="handleChange"
+      style="margin-left:-10px;line-height:60px"
     />
     <div v-else>
       <span style="color:red;">Bad type value: {{_type}}</span>
@@ -146,7 +147,7 @@ export default {
 @import url("./area.less");
 </style>
 <style lang="less" scoped>
-.area-linkage {
+.s-area-linkage {
   height: 40px;
   /deep/ .area-cascader-wrap .area-select {
     width: 100%;

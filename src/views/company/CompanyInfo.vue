@@ -132,38 +132,54 @@
       <!-- 企业基本信息 -->
       <detail-list title="基本信息">
         <a-button type="primary" slot="btnslot" @click="handleEdit()">完善</a-button>
-        <detail-list-item term="企业名称(全称)">九州易行科技有限公司</detail-list-item>
-        <detail-list-item term="联系电话">15119990718</detail-list-item>
-        <detail-list-item term="所在地区">广东省 汕头市 龙湖区</detail-list-item>
-        <detail-list-item term="地址">嵩山路118号潮人创意园A栋718室内</detail-list-item>
+        <detail-list-item term="企业名称(全称)">{{companyInfo.companyName?companyInfo.companyName:'未填'}}</detail-list-item>
+        <detail-list-item term="联系电话">{{companyInfo.contactNumber?companyInfo.contactNumber:'未填'}}</detail-list-item>
+        <detail-list-item
+          term="所在地区"
+        >{{companyInfo.areaCode?this.getPcaText(companyInfo.areaCode):'未填'}}</detail-list-item>
+        <detail-list-item term="地址">{{companyInfo.address?companyInfo.address:'未填'}}</detail-list-item>
       </detail-list>
       <detail-list>
-        <detail-list-item term="企业简介">未填</detail-list-item>
+        <detail-list-item
+          term="企业简介"
+          style="width:100%"
+        >{{companyInfo.introduction?companyInfo.introduction:'未填'}}</detail-list-item>
       </detail-list>
       <a-divider style="margin-bottom: 32px" />
       <!-- 企业概况 -->
       <detail-list title="企业概况">
-        <detail-list-item term="企业规模">未填</detail-list-item>
-        <detail-list-item term="企业性质">未填</detail-list-item>
-        <detail-list-item term="员工人数">未填</detail-list-item>
+        <detail-list-item term="企业规模">{{companyInfo.scale|scaleFilter}}</detail-list-item>
+        <detail-list-item term="企业性质">{{companyInfo.nature|natureFilter}}</detail-list-item>
+        <detail-list-item term="员工人数">{{companyInfo.accountRange|accountRangeFilter}}</detail-list-item>
+      </detail-list>
+      <detail-list>
+        <detail-list-item
+          term="经营范围"
+          style="width:100%"
+        >{{companyInfo.businessScope?companyInfo.businessScope:'未填'}}</detail-list-item>
       </detail-list>
       <a-divider style="margin-bottom: 32px" />
       <detail-list title="认证信息">
-        <detail-list-item term="姓名">未填</detail-list-item>
-        <detail-list-item term="性别">未填</detail-list-item>
-        <detail-list-item term="身份证">未填</detail-list-item>
+        <detail-list-item term="姓名">{{companyInfo.legalPersonName?companyInfo.legalPersonName:'未填'}}</detail-list-item>
+        <detail-list-item term="性别">{{companyInfo.legalPersonName?companyInfo.legalPersonName:'未填'}}</detail-list-item>
+        <detail-list-item
+          term="身份证"
+        >{{companyInfo.legalPersonIdCard?companyInfo.legalPersonIdCard:'未填'}}</detail-list-item>
       </detail-list>
       <detail-list>
         <detail-list-item term="协议与营业执照">
-          <div style="display:inline-flex;vertical-align:middle">
-            <template v-for="(item, index) in protocolAttachmentlist">
-              <img
-                :src="item"
-                style="width:150px;height:150px;display:flex;margin-left:30px"
-                :key="index"
-              />
-            </template>
-          </div>
+          <template v-if="protocolAttachmentlist.length>0">
+            <div style="display:inline-flex;vertical-align:middle">
+              <template v-for="(item, index) in protocolAttachmentlist">
+                <img
+                  :src="item"
+                  style="width:150px;height:150px;display:flex;margin-left:30px"
+                  :key="index"
+                />
+              </template>
+            </div>
+          </template>
+          <template v-else>未上传</template>
         </detail-list-item>
       </detail-list>
     </a-card>
@@ -174,6 +190,10 @@
 </template>
 <script>
 
+import { DetailMixin } from '../../mixins/DetailMixin'
+
+import Vue from 'vue'
+import { COMPANY_INFO } from '../../store/mutation-types'
 import ChartCardIndex from '../../components/Card/ChartCardIndex'
 //import MiniProgress from '../../components/Charts/MiniProgress'
 import DetailList from '../../components/tools/DetailList'
@@ -182,22 +202,130 @@ const DetailListItem = DetailList.Item
 import ModalCompanyInfo from './modules/ModalCompanyInfo'
 export default {
   name: 'CompanyInfo',
+  mixins: [DetailMixin],
   components: { DetailList, DetailListItem, ChartCardIndex, ModalCompanyInfo },
   data() {
     return {
       loading: true,
-      protocolAttachmentlist: [],
+      protocolAttachmentlist: [], //营业执照
+      companyInfo: [],
     }
   },
   created() {
+    //获取订购信息
     setTimeout(() => {
       this.loading = !this.loading
-    }, 1000)
+    }, 500)
+
+    //企业信息
+    let companyList = Vue.ls.get(COMPANY_INFO)
+    if (companyList) {
+      if (companyList.length > 0) {
+        companyList.forEach(item => {
+          if (item.isDefault == 1) {
+            this.companyInfo = item
+            return
+          }
+        })
+      } else {
+        this.companyInfo = companyList
+      }
+    }
+    //执照
+    this.protocolAttachmentlist = this.companyInfo.protocolAttachment ? this.companyInfo.protocolAttachment.split(';') : []
+
+  },
+  filters: {
+    //区域信息
+    // areaFilter(value) {
+    //   return this.getPcaText(value)
+    // },
+    //企业规模
+    scaleFilter(value) {
+      let result = '未填'
+      switch (value) {
+        case 1:
+          result = '小型'
+          break
+        case 2:
+          result = '微型'
+          break
+        case 3:
+          result = '中型'
+          break
+        case 4:
+          result = '大型'
+          break
+        case 5:
+          result = '特大型'
+          break
+      }
+      return result
+    },
+    //企业性质
+    natureFilter(value) {
+      let result = '未填'
+      switch (value) {
+        case 1:
+          result = '私营企业'
+          break
+        case 2:
+          result = '股份有限公司'
+          break
+        case 3:
+          result = '股份合作制企业'
+          break
+        case 4:
+          result = '有限责任公司'
+          break
+        case 5:
+          result = '个体户'
+          break
+        case 6:
+          result = '外资企业'
+          break
+        case 7:
+          result = '国有企业'
+          break
+        case 8:
+          result = '集体企业'
+          break
+        case 9:
+          result = '合伙企业'
+          break
+        case 10:
+          result = '联营企业'
+          break
+      }
+      return result
+    },
+    //员工人数
+    accountRangeFilter(value) {
+      let result = '未填'
+      switch (value) {
+        case 1:
+          result = '0-20人'
+          break
+        case 2:
+          result = '20-99人'
+          break
+        case 3:
+          result = '100-499人'
+          break
+        case 4:
+          result = '500-1000人'
+          break
+        case 5:
+          result = '1000人以上'
+          break
+      }
+      return result
+    },
   },
   methods: {
     //完善/编辑
     handleEdit() {
-      this.$refs.modalForm.edit()
+      this.$refs.modalForm.edit(this.companyInfo)
       this.$refs.modalForm.modalSet.title = '编辑'
     }
   }

@@ -21,6 +21,16 @@ export const ListMixin = {
       },
       /* 排序参数 */
       isorter: {},
+
+      //布局
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 5 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
     }
   },
   created() {
@@ -104,6 +114,17 @@ export const ListMixin = {
     //重置
     searchReset() {
       this.queryParam = {}
+    },
+    //分页、排序、筛选变化时触发
+    handleTableChange(pagination, filters, sorter) {
+      //分页、排序、筛选变化时触发
+      //TODO 筛选
+      if (Object.keys(sorter).length > 0) {
+        this.isorter.column = sorter.field
+        this.isorter.order = 'ascend' == sorter.order ? 'asc' : 'desc'
+      }
+      this.ipagination = pagination
+      this.loadData()
     },
   }
 }

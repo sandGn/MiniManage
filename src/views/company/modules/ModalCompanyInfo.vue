@@ -139,7 +139,7 @@
         </a-form-item>
 
         <!-- 营业执照 -->
-        <a-form-item label="协议和营业执照" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="营业执照" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-upload
             list-type="picture-card"
             :file-list="protocolAttachmentList"
@@ -166,6 +166,7 @@
 </template>
 
 <script>
+import pick from 'lodash.pick'
 import SDrawer from '../../../components/SDrawer/index'
 import AreaLinkage from '../../../components/Area/AreaLinkage'
 export default {
@@ -183,6 +184,7 @@ export default {
       },
       confirmLoading: false,
       form: this.$form.createForm(this),
+      model: {},
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 },
@@ -220,8 +222,26 @@ export default {
   created() { },
   methods: {
     //完善/编辑
-    edit() {
+    edit(record) {
       this.resetData()
+      this.model = Object.assign({}, record)
+      this.$nextTick(() => {
+        this.form.setFieldsValue(pick(this.model,
+          'companyName',
+          'contactNumber',
+          'areaCode',
+          'address',
+          'introduction',
+          'scale',
+          'nature',
+          'accountRange',
+          'businessScope',
+          'legalPersonName',
+          'legalPersonIdCard',
+          'mobile',
+          'protocolAttachment',
+        ))
+      })
     },
     //重置数据
     resetData() {
@@ -231,6 +251,7 @@ export default {
     handleOk() {
       this.form.validateFields((err, values) => {
         console.log(err, values)
+        console.log(JSON.stringify(values))
       })
     },
     //取消
