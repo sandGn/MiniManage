@@ -41,7 +41,7 @@
         >{{ipagination.current*ipagination.pageSize+index+1-ipagination.pageSize}}</span>
         <!-- 操作 -->
         <span slot="action" slot-scope="text,record">
-          <a @click="handleEdit(record)">权限</a>
+          <a @click="handlePerssion(record.id)">权限</a>
           <a-divider type="vertical" />
           <a @click="handleDelete(record)">删除</a>
         </span>
@@ -51,15 +51,19 @@
 
     <!-- 表单区域 -->
     <modal-duty ref="modalForm" @ok="modalFormOk"></modal-duty>
+    <!-- 岗位权限配置 -->
+    <drawer-duty-permission ref="modalDutyPermission"></drawer-duty-permission>
   </a-card>
 </template>
 <script>
 import { ListMixin } from '../../mixins/ListMixin'
 import ModalDuty from './modules/ModalDuty'
+import DrawerDutyPermission from './modules/DrawerDutyPermission'
 export default {
   mixins: [ListMixin],
   components: {
-    ModalDuty
+    ModalDuty,
+    DrawerDutyPermission
   },
   data() {
     return {
@@ -97,7 +101,10 @@ export default {
 
   },
   methods: {
-
+    //岗位权限弹窗
+    handlePerssion(accountRoleId) {
+      this.$refs.modalDutyPermission.show(accountRoleId)
+    },
   },
 }
 </script>

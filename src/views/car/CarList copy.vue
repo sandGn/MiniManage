@@ -16,10 +16,10 @@
             <a-form-item label="车辆状态">
               <a-select v-model="queryParam.status" placeholder="请选择" default-value>
                 <a-select-option value>全部</a-select-option>
-                <a-select-option value="1">在位</a-select-option>
-                <a-select-option value="2">出车</a-select-option>
-                <a-select-option value="3">保养</a-select-option>
-                <a-select-option value="4">维修</a-select-option>
+                <a-select-option value="0">在位</a-select-option>
+                <a-select-option value="1">出车</a-select-option>
+                <a-select-option value="2">保养</a-select-option>
+                <a-select-option value="3">维修</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -54,17 +54,14 @@
           slot-scope="text,record,index"
         >{{ipagination.current*ipagination.pageSize+index+1-ipagination.pageSize}}</span>
 
-        <span slot="statusslot" slot-scope="text">
-          <a-badge :status="text | stateTypeFilter" :text="text | stateFilter" />
-        </span>
         <!-- 启用禁用 -->
-        <template slot="isenableslot" slot-scope="text,record">
+        <template slot="is_enable" slot-scope="text,record">
           <a-switch
             size="small"
             checkedChildren="是"
             unCheckedChildren="否"
-            :checked="text===0?false:true"
-            @change="handleEnable(record)"
+            :checked="text"
+            @change="checked => setCarEnable(checked,record)"
           />
         </template>
         <!-- 操作 -->
@@ -109,7 +106,7 @@
     </s-table>-->
 
     <!-- 添加车辆 -->
-    <!-- <a-modal
+    <a-modal
       :width="640"
       :visible="visible"
       title="添加车辆"
@@ -138,21 +135,21 @@
               <a-select-option value="蓝色">蓝色</a-select-option>
               <a-select-option value="橙色">橙色</a-select-option>
             </a-select>
-    </a-form-item>-->
-    <!-- <a-form-item label="当前公里数" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          </a-form-item>
+          <!-- <a-form-item label="当前公里数" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input-number
               style="width:100%"
               :step="0.01"
               v-decorator="['kilometres', {rules:[{required: true, message: '请输入车辆当前的公里数'}]}]"
             />
-    </a-form-item>-->
-    <!-- <a-form-item label="油耗" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          </a-form-item>-->
+          <!-- <a-form-item label="油耗" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-input
               suffix="L/100km"
               v-decorator="['gas_mileage', {rules:[{required: true, message: '请输入车辆每一千公里的油耗(单位升)'}]}]"
             />
-    </a-form-item>-->
-    <!-- <a-form-item label="年检到期时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          </a-form-item>-->
+          <a-form-item label="年检到期时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-date-picker
               style="width: 100%"
               v-decorator="['yearcheck_duetime', {rules:[{required: true, message: '请选择年检到期时间'}]}]"
@@ -174,27 +171,27 @@
           </a-form-item>
         </a-form>
       </a-spin>
-    </a-modal>-->
+    </a-modal>
   </a-card>
 </template>
 <script>
 
-import { ListMixin } from '../../mixins/ListMixin'
+import { getCarList, updateCarEnable, deleteCar, insertCar } from '../../api/manage'
 //车辆状态
 const carStateMap = {
-  1: {
+  0: {
     status: 'success',
     text: '在位'
   },
-  2: {
+  1: {
     status: 'default',
     text: '出车'
   },
-  3: {
+  2: {
     status: 'warning',
     text: '保养中'
   },
-  4: {
+  3: {
     status: 'error',
     text: '维修中'
   }
@@ -202,27 +199,30 @@ const carStateMap = {
 
 export default {
   //import引入的组件需要注入到对象中才能使用
-  name: 'CarList',
-  mixins: [ListMixin],
-  components: {},
+  components: {
+
+  },
   data() {
     return {
+      // 查询参数
+      queryParam: {},
+      selectedRowKeys: [],
 
       // 表头
       columns: [
         {
           title: '序号',
-          scopedSlots: { customRender: 'serialslot' },
+          scopedSlots: { customRender: 'serial' },
           align: 'center',
         },
         {
           title: '车辆名称',
-          dataIndex: 'carName',
+          dataIndex: 'name',
           align: 'center',
         },
         {
           title: '车牌号',
-          dataIndex: 'licensePlate',
+          dataIndex: 'license_plate',
           align: 'center',
         },
         {
@@ -232,26 +232,26 @@ export default {
         },
         {
           title: '年检到期时间',
-          dataIndex: 'yearcheckDueDate',
+          dataIndex: 'yearcheck_duetime',
           sorter: true,
           align: 'center',
         },
         {
           title: '保险到期',
-          dataIndex: 'insuranceDueDate',
+          dataIndex: 'insurance_duetime',
           sorter: true,
           align: 'center',
         },
         {
           title: '状态',
-          dataIndex: 'status',
-          scopedSlots: { customRender: 'statusslot' },
+          dataIndex: 'state',
+          scopedSlots: { customRender: 'state' },
           align: 'center',
         },
         {
           title: '是否启用',
-          dataIndex: 'isEnable',
-          scopedSlots: { customRender: 'isenableslot' },
+          dataIndex: 'is_enable',
+          scopedSlots: { customRender: 'is_enable' },
           align: 'center',
           //customRender: text => text ? '是' : '否'
         },
@@ -262,10 +262,31 @@ export default {
           align: 'center',
         }
       ],
-      //api 请求参数
-      url: {
-        list: '/car/cars',
-      }
+
+      // 加载数据方法 必须为 Promise 对象
+      loadData: parameter => {
+        console.log('loadData.parameter', parameter)
+        return getCarList(Object.assign(parameter, this.queryParam)).then(
+          res => {
+            return res
+          }
+        )
+      },
+
+
+      //弹窗
+      form: this.$form.createForm(this),
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 13 }
+      },
+      visible: false,
+
+      confirmLoading: false,
     }
   },
   //过滤
@@ -283,90 +304,90 @@ export default {
   watch: {},
   methods: {
     //删除车辆
-    // delCar(record) {
-    //   this.$confirm({
-    //     title: '警告',
-    //     content: `真的要删除 ${record.name} 吗?`,
-    //     okText: '删除',
-    //     okType: 'danger',
-    //     cancelText: '取消',
-    //     onOk: () => {
-    //       deleteCar({ carid: record.id })
-    //         .then(res => {
-    //           if (res.succ) {
-    //             this.$message.info(`${record.name} 删除成功`)
-    //             this.$refs.table.refresh(true) //刷新table
-    //           } else {
-    //             this.$message.error(`${record.name} 删除失败,请稍后再试`)
-    //           }
-    //         })
-    //     },
-    //     onCancel() {
-    //       console.log('Cancel')
-    //     }
-    //   })
-    // },
+    delCar(record) {
+      this.$confirm({
+        title: '警告',
+        content: `真的要删除 ${record.name} 吗?`,
+        okText: '删除',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          deleteCar({ carid: record.id })
+            .then(res => {
+              if (res.succ) {
+                this.$message.info(`${record.name} 删除成功`)
+                this.$refs.table.refresh(true) //刷新table
+              } else {
+                this.$message.error(`${record.name} 删除失败,请稍后再试`)
+              }
+            })
+        },
+        onCancel() {
+          console.log('Cancel')
+        }
+      })
+    },
     //启用禁用车辆
-    // setCarEnable(checked, event) {
-    //   this.$confirm({
-    //     title: '警告',
-    //     content: `确定要 ${checked ? '开启' : '禁用'} ${event.name} 吗?`,
-    //     okText: '确定',
-    //     okType: 'danger',
-    //     cancelText: '取消',
-    //     onOk: () => {
-    //       const obj =
-    //       {
-    //         enable: checked,
-    //         carid: event.id
-    //       }
-    //       updateCarEnable(obj)
-    //         .then(res => {
-    //           if (res.succ) {
-    //             this.$message.info(`${event.name} ${checked ? '开启' : '禁用'} 成功`)
-    //             event.is_enable = checked
-    //           } else {
-    //             this.$message.error(`${event.name} ${checked ? '开启' : '禁用'}失败,请稍后再试`)
-    //           }
-    //           //this.$refs.table.refresh(true) //刷新table
-    //         })
-    //         .catch()
-    //     },
-    //     onCancel() {
-    //     }
-    //   })
-    // },
+    setCarEnable(checked, event) {
+      this.$confirm({
+        title: '警告',
+        content: `确定要 ${checked ? '开启' : '禁用'} ${event.name} 吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          const obj =
+          {
+            enable: checked,
+            carid: event.id
+          }
+          updateCarEnable(obj)
+            .then(res => {
+              if (res.succ) {
+                this.$message.info(`${event.name} ${checked ? '开启' : '禁用'} 成功`)
+                event.is_enable = checked
+              } else {
+                this.$message.error(`${event.name} ${checked ? '开启' : '禁用'}失败,请稍后再试`)
+              }
+              //this.$refs.table.refresh(true) //刷新table
+            })
+            .catch()
+        },
+        onCancel() {
+        }
+      })
+    },
     //添加车辆弹窗
-    // showAddCarModal() {
-    //   this.visible = true
-    // },
+    showAddCarModal() {
+      this.visible = true
+    },
     //添加车辆
-    // addCar() {
-    //   const { form: { validateFields } } = this
-    //   this.confirmLoading = true
-    //   validateFields((errors, values) => {
-    //     if (!errors) {
-    //       values['yearcheck_duetime'] = values['yearcheck_duetime'].format('YYYY-MM-DD HH:mm:ss')
-    //       values['insurance_duetime'] = values['insurance_duetime'].format('YYYY-MM-DD HH:mm:ss')
-    //       //console.log(values)
-    //       insertCar(values)
-    //         .then(res => {
-    //           if (res.succ) {
-    //             this.$refs.table.refresh(true) //刷新table                
-    //           } else {
-    //             this.$message.error(`添加失败,请稍后再试`)
-    //           }
-    //           this.visible = false
-    //           this.confirmLoading = false
-    //         })
-    //         .catch(() => {
-    //           this.visible = false
-    //           this.confirmLoading = false
-    //         })
+    addCar() {
+      const { form: { validateFields } } = this
+      this.confirmLoading = true
+      validateFields((errors, values) => {
+        if (!errors) {
+          values['yearcheck_duetime'] = values['yearcheck_duetime'].format('YYYY-MM-DD HH:mm:ss')
+          values['insurance_duetime'] = values['insurance_duetime'].format('YYYY-MM-DD HH:mm:ss')
+          //console.log(values)
+          insertCar(values)
+            .then(res => {
+              if (res.succ) {
+                this.$refs.table.refresh(true) //刷新table                
+              } else {
+                this.$message.error(`添加失败,请稍后再试`)
+              }
+              this.visible = false
+              this.confirmLoading = false
+            })
+            .catch(() => {
+              this.visible = false
+              this.confirmLoading = false
+            })
 
-    //     }
-    //   })
-    // }
+        }
+      })
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {

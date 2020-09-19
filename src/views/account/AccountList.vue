@@ -14,16 +14,6 @@
               ></a-input>
             </a-form-item>
           </a-col>
-          <!-- 审核状态 -->
-          <a-col :lg="4" :sm="12">
-            <a-form-item label="审核状态">
-              <a-select v-model="queryParam.reviewStatus" placeholder="请选择" default-value>
-                <a-select-option value>全部</a-select-option>
-                <a-select-option value="1">待审核</a-select-option>
-                <a-select-option value="2">审核不通过</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
           <!-- 查询、重置 -->
           <a-col :lg="4" :sm="24">
             <span class="table-page-search-submitButtons">
@@ -61,10 +51,12 @@
         </template>
         <!-- 操作 -->
         <span slot="action" slot-scope="text,record">
-          <template v-if="record.reviewStatus===1">
-            <a @click="handleAudit(record)">审核</a>
-          </template>
-          <template v-else>不通过</template>
+          <a v-if="record.status==1" @click="handleEnable(record)">禁用</a>
+          <a v-if="record.status==2" @click="handleEnable(record)">启用</a>
+          <a-divider type="vertical" />
+          <a @click="handleDetail(record)">详情</a>
+          <a-divider type="vertical" />
+          <a v-if="record.status==2" @click="handleDelete(record)">删除</a>
         </span>
       </a-table>
     </div>
@@ -142,6 +134,11 @@ export default {
         {
           title: '手机号',
           dataIndex: 'mobile',
+          align: 'center',
+        },
+        {
+          title: '岗位',
+          dataIndex: '',
           align: 'center',
         },
         {
