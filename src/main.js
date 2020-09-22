@@ -9,6 +9,9 @@ import 'ant-design-vue/dist/antd.less'
 
 //省市联动
 import VueAreaLinkage from 'vue-area-linkage'
+//颜色选择器
+import vcolorpicker from 'vcolorpicker'
+
 // mock
 //import '../mock'
 
@@ -22,6 +25,7 @@ Vue.config.productionTip = false
 Vue.use(Antd)
 Vue.use(VueStorage, config.storageOptions)
 Vue.use(VueAreaLinkage)
+Vue.use(vcolorpicker)
 
 new Vue({
   router,

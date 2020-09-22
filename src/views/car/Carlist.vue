@@ -5,9 +5,13 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="8">
-          <a-col :lg="4" :sm="12">
+          <a-col :lg="6" :sm="12">
             <a-form-item label="车辆名称">
-              <a-input autocomplete="off" placeholder="请输入" v-model="queryParam.searchKey" />
+              <a-input
+                autocomplete="off"
+                placeholder="请输入车辆名称/车牌号搜索"
+                v-model="queryParam.searchKey"
+              />
             </a-form-item>
           </a-col>
 
@@ -53,7 +57,18 @@
           slot="serialslot"
           slot-scope="text,record,index"
         >{{ipagination.current*ipagination.pageSize+index+1-ipagination.pageSize}}</span>
-
+        <!-- 车辆图片 -->
+        <template slot="carImgUrlslot" slot-scope="text, record">
+          <div class="anty-img-wrap">
+            <a-avatar shape="square" :src="record.carImgUrl" icon="user" />
+          </div>
+        </template>
+        <!-- 车辆颜色 -->
+        <template slot="colorslot" slot-scope="text">
+          <span class="vue-color-span" :style="{background:text}"></span>
+          <!-- <a-badge :status="text | stateTypeFilter" :text="text | stateFilter" /> -->
+        </template>
+        <!-- 车辆状态 -->
         <span slot="statusslot" slot-scope="text">
           <a-badge :status="text | stateTypeFilter" :text="text | stateFilter" />
         </span>
@@ -76,109 +91,11 @@
       </a-table>
     </div>
     <!-- table区域-end -->
-
-    <!-- <s-table
-      ref="table"
-      size="default"
-      rowKey="id"
-      :columns="columns"
-      :data="loadData"
-      showPagination="auto"
-    >
-      <span slot="serial" slot-scope="text, record, index">{{ index + 1 }}</span>
-
-      <span slot="state" slot-scope="text">
-        <a-badge :status="text | stateTypeFilter" :text="text | stateFilter" />
-      </span>
-
-      <span slot="is_enable" slot-scope="text,record">
-        <a-switch
-          size="small"
-          checkedChildren="是"
-          unCheckedChildren="否"
-          :checked="text"
-          @change="checked => setCarEnable(checked,record)"
-        />
-      </span>
-
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="delCar(record)">删除</a>
-        </template>
-      </span>
-    </s-table>-->
-
-    <!-- 添加车辆 -->
-    <!-- <a-modal
-      :width="640"
-      :visible="visible"
-      title="添加车辆"
-      @ok="addCar"
-      @cancel="visible = false"
-      :confirmLoading="confirmLoading"
-    >
-      <a-spin :spinning="confirmLoading">
-        <a-form :form="form">
-          <a-form-item label="车辆名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['name', {rules:[{required: true, message: '请输入车辆名称'}]}]" />
-          </a-form-item>
-          <a-form-item label="车牌号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input
-              v-decorator="['license_plate', {rules:[{required: true, message: '请输入车辆车牌号码'}]}]"
-            />
-          </a-form-item>
-          <a-form-item label="车牌颜色" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-select v-decorator="['color', {rules:[{required: true, message: '请选择车牌颜色'}]}]">
-              <a-select-option value="白色">白色</a-select-option>
-              <a-select-option value="黑色">黑色</a-select-option>
-              <a-select-option value="银色">银色</a-select-option>
-              <a-select-option value="棕色">棕色</a-select-option>
-              <a-select-option value="灰色">灰色</a-select-option>
-              <a-select-option value="红色">红色</a-select-option>
-              <a-select-option value="蓝色">蓝色</a-select-option>
-              <a-select-option value="橙色">橙色</a-select-option>
-            </a-select>
-    </a-form-item>-->
-    <!-- <a-form-item label="当前公里数" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input-number
-              style="width:100%"
-              :step="0.01"
-              v-decorator="['kilometres', {rules:[{required: true, message: '请输入车辆当前的公里数'}]}]"
-            />
-    </a-form-item>-->
-    <!-- <a-form-item label="油耗" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input
-              suffix="L/100km"
-              v-decorator="['gas_mileage', {rules:[{required: true, message: '请输入车辆每一千公里的油耗(单位升)'}]}]"
-            />
-    </a-form-item>-->
-    <!-- <a-form-item label="年检到期时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-date-picker
-              style="width: 100%"
-              v-decorator="['yearcheck_duetime', {rules:[{required: true, message: '请选择年检到期时间'}]}]"
-            />
-          </a-form-item>
-          <a-form-item label="保险到期时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-date-picker
-              style="width: 100%"
-              v-decorator="['insurance_duetime', {rules:[{required: true, message: '请选择保险到期时间'}]}]"
-            />
-          </a-form-item>
-
-          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否启用">
-            <a-switch
-              checkedChildren="是"
-              unCheckedChildren="否"
-              v-decorator="['is_enable', {valuePropName: 'checked',initialValue: true}]"
-            />
-          </a-form-item>
-        </a-form>
-      </a-spin>
-    </a-modal>-->
+    <drawer-car ref="modalForm" @ok="modalFormOk"></drawer-car>
   </a-card>
 </template>
 <script>
-
+import DrawerCar from './modules/DrawerCar'
 import { ListMixin } from '../../mixins/ListMixin'
 //车辆状态
 const carStateMap = {
@@ -204,7 +121,7 @@ export default {
   //import引入的组件需要注入到对象中才能使用
   name: 'CarList',
   mixins: [ListMixin],
-  components: {},
+  components: { DrawerCar },
   data() {
     return {
 
@@ -213,6 +130,11 @@ export default {
         {
           title: '序号',
           scopedSlots: { customRender: 'serialslot' },
+          align: 'center',
+        },
+        {
+          title: '车辆图片',
+          scopedSlots: { customRender: 'carImgUrlslot' },
           align: 'center',
         },
         {
@@ -228,6 +150,7 @@ export default {
         {
           title: '车辆颜色',
           dataIndex: 'color',
+          scopedSlots: { customRender: 'colorslot' },
           align: 'center',
         },
         {
@@ -282,6 +205,18 @@ export default {
   //监控data中的数据变化
   watch: {},
   methods: {
+    //新增
+    handleAdd() {
+      //console.log(this.ipagination.total)
+      let total = 5
+      if (total < 3)
+        this.$message.info(`无法新增，请续费`)
+      else {
+        this.$refs.modalForm.add()
+        this.$refs.modalForm.title = '新增'
+        this.$refs.modalForm.disableSubmit = false
+      }
+    }
     //删除车辆
     // delCar(record) {
     //   this.$confirm({
@@ -384,4 +319,12 @@ export default {
 </script>
 <style lang='less' scoped>
 //@import url(); 引入公共css类
+.vue-color-span {
+  background: rgb(0, 102, 153);
+  display: inline-block;
+  border: 1px solid #666;
+  width: 55px;
+  height: 20px;
+  border-radius: 5px;
+}
 </style>

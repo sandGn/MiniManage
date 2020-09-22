@@ -133,7 +133,7 @@ export const asyncRouterMap = [
         path: '/order',
         name: 'order',
         redirect: '/order/orderlist',
-        component: PageView,
+        component: RouteView,
         meta: { title: '订单管理', keepAlive: true, icon: 'pay-circle', permission: ['ORDER_MANAGE'] },
         children: [
           // 订单列表

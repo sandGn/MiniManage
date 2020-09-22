@@ -1,53 +1,62 @@
+<!-- 司机列表 -->
 <template>
   <a-card :bordered="false">
-    <div class="table-page-search-wrapper"></div>
+    <!-- 查询区域 -->
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="8">
+          <a-col :lg="6" :sm="12">
+            <a-form-item label="司机名称">
+              <a-input
+                autocomplete="off"
+                placeholder="请输入司机名称/车牌号搜索"
+                v-model="queryParam.searchKey"
+              />
+            </a-form-item>
+          </a-col>
 
-    <div>
-      <a-button
-        type="dashed"
-        style="width: 100%;margin-bottom: 16px;"
-        icon="plus"
-        @click="showAddDriverModal()"
-      >添加</a-button>
+          <!-- 查询、重置 -->
+          <a-col :lg="4" :sm="24">
+            <span class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery">查询</a-button>
+              <a-button style="margin-left: 8px" @click="searchReset">重置</a-button>
+              <!-- <a-button type="primary" style="margin-left: 8px" @click="handleAdd">新增</a-button> -->
+            </span>
+          </a-col>
+        </a-row>
+      </a-form>
     </div>
 
-    <s-table
-      ref="table"
-      size="default"
-      rowKey="id"
-      :columns="columns"
-      :data="loadData"
-      showPagination="auto"
-    >
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="delDriver(record)">删除</a>
-        </template>
-      </span>
-    </s-table>
+    <!-- table区域-begin -->
+    <div>
+      <a-table
+        ref="table"
+        bordered
+        size="middle"
+        rowKey="id"
+        :columns="columns"
+        :dataSource="dataSource"
+        :pagination="ipagination"
+        :loading="loading"
+        @change="handleTableChange"
+      >
+        <!-- 序号 -->
+        <span
+          slot="serialslot"
+          slot-scope="text,record,index"
+        >{{ipagination.current*ipagination.pageSize+index+1-ipagination.pageSize}}</span>
+        <!-- 操作 -->
+        <span slot="action" slot-scope="text,record">
+          <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" />
+          <a @click="handleDelete(record)">删除</a>
+        </span>
+      </a-table>
+    </div>
+    <!-- table区域-end -->
+    <drawer-driver ref="modalForm" @ok="modalFormOk"></drawer-driver>
 
-    <a-modal
-      :width="640"
-      :visible="visible"
-      title="添加司机"
-      @ok="addDriver"
-      @cancel="visible = false"
-      :confirmLoading="confirmLoading"
-    >
-      <a-spin :spinning="confirmLoading">
-        <a-form :form="form">
-          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="员工姓名">
-            <a-select v-decorator="['account_id', {rules:[{required: true, message: '请选择员工姓名'}]}]">
-              <a-select-option :value="1">员工1</a-select-option>
-              <a-select-option :value="2">员工2</a-select-option>
-            </a-select>
-          </a-form-item>
-
-          <!-- <a-form-item label="驾驶证编号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['license', {rules:[{required: true, message: '驾驶证编号'}]}]" />
-          </a-form-item>-->
-
-          <a-form-item label="准驾车辆" :labelCol="labelCol" :wrapperCol="wrapperCol">
+    <!-- <a-form-item label="准驾车辆" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-select
               style="width: 100%"
               mode="multiple"
@@ -70,147 +79,69 @@
               <a-select-option value="N">N</a-select-option>
               <a-select-option value="P">P</a-select-option>
             </a-select>
-          </a-form-item>
-
-          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否有效">
-            <a-switch
-              checkedChildren="是"
-              unCheckedChildren="否"
-              v-decorator="['is_valid', {valuePropName: 'checked',initialValue: true}]"
-            />
-          </a-form-item>
-        </a-form>
-      </a-spin>
-    </a-modal>
+    </a-form-item>-->
   </a-card>
 </template>
 
 <script>
-import STable from '@/components/Table'
-import { getDriverList, insertDriver, deleteDriver } from '../../api/manage'
+import DrawerDriver from './modules/DrawerDriver'
+import { ListMixin } from '../../mixins/ListMixin'
 export default {
+  name: 'DriverList',
+  mixins: [ListMixin],
   components: {
-    STable
+    DrawerDriver
   },
   data() {
     return {
       //表头
       columns: [
         {
-          title: '序号',
-          dataIndex: 'id'
+          title: '编号',
+          scopedSlots: { customRender: 'serialslot' },
+          align: 'center',
         },
         {
-          title: '姓名',
-          dataIndex: 'name'
+          title: '员工姓名',
+          dataIndex: 'realName',
+          align: 'center',
         },
         {
           title: '准驾车辆',
-          dataIndex: 'license_type'
+          dataIndex: 'licenseType',
+          align: 'center',
         },
         {
           title: '是否有效',
-          dataIndex: 'is_valid',
-          customRender: text => text ? '是' : '否'
+          dataIndex: 'isValid',
+          customRender: text => text ? '是' : '否',
+          align: 'center',
         },
         {
           title: '添加时间',
-          dataIndex: 'create_time'
+          dataIndex: 'createTime',
+          align: 'center',
         },
         {
           title: '更新时间',
-          dataIndex: 'update_time'
+          dataIndex: 'updateTime',
+          align: 'center',
         },
         {
           title: '操作',
           dataIndex: 'action',
           width: '150px',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: { customRender: 'action' },
+          align: 'center',
         }
       ],
-      // 加载数据方法 必须为 Promise 对象
-      loadData: parameter => {
-        //console.log('loadData.parameter', parameter)
-        return getDriverList(Object.assign(parameter, this.queryParam)).then(
-          res => {
-            return res
-          }
-        )
-      },
-
-
-      //弹窗
-      form: this.$form.createForm(this),
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 13 }
-      },
-      visible: false,
-      confirmLoading: false,
+      url: {
+        list: '/car/drivers',
+      }
     }
   },
-
   methods: {
-    //删除车辆
-    delDriver(record) {
-      this.$confirm({
-        title: '警告',
-        content: `真的要删除司机 ${record.name} 吗?`,
-        okText: '删除',
-        okType: 'danger',
-        cancelText: '取消',
-        onOk: () => {
-          deleteDriver({ driverid: record.id })
-            .then(res => {
-              //debugger
-              if (res.succ) {
-                this.$message.info(`司机 ${record.name} 删除成功`)
-                this.$refs.table.refresh(true) //刷新table
-              } else {
-                this.$message.error(`${record.name} 删除失败,请稍后再试`)
-              }
-              this.confirmLoading = false
-            })
-            .catch(() => {
-              this.confirmLoading = false
-            })
-        },
-        onCancel() {
-          console.log('Cancel')
-        }
-      })
-    },
 
-    //添加车辆弹窗
-    showAddDriverModal() {
-      this.visible = true
-    },
-    //添加司机
-    addDriver() {
-      const { form: { validateFields } } = this
-      this.confirmLoading = true
-      validateFields((errors, values) => {
-        if (!errors) {
-          insertDriver(values).then(res => {
-            //debugger
-            if (res.succ) {
-              this.$refs.table.refresh(true) //刷新table
-            } else {
-              this.$message.error(`添加失败,请稍后再试`)
-            }
-            this.visible = false
-            this.confirmLoading = false
-          }).catch(() => {
-            this.visible = false
-            this.confirmLoading = false
-          })
-        }
-      })
-    }
   }
 }
 </script>

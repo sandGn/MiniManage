@@ -169,6 +169,7 @@
 import pick from 'lodash.pick'
 import SDrawer from '../../../components/SDrawer/index'
 import AreaLinkage from '../../../components/Area/AreaLinkage'
+import { putAction } from '../../../api'
 export default {
   name: 'ModalCompanyInfo',
   components: { SDrawer, AreaLinkage },
@@ -216,6 +217,9 @@ export default {
         legalPersonName: {},
         legalPersonIdCard: {},
         mobile: { rules: [{ pattern: /^1[3456789]\d{9}$/ }] }
+      },
+      url: {
+        edit: '/company/company',       //修改店铺
       }
     }
   },
@@ -252,6 +256,18 @@ export default {
       this.form.validateFields((err, values) => {
         console.log(err, values)
         console.log(JSON.stringify(values))
+        if (!err) {
+          let param = Object.assign({}, values)
+          putAction(this.url.edit, param).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.$emit('ok')
+              this.close()
+            } else {
+              this.$message.warning(res.message)
+            }
+          })
+        }
       })
     },
     //取消

@@ -24,11 +24,25 @@
               </a-select>
             </a-form-item>
           </a-col>
+
           <!-- 查询、重置 -->
           <a-col :lg="4" :sm="24">
             <span class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery">查询</a-button>
-              <a-button style="margin-left: 8px" @click="searchReset">重置</a-button>
+              <a-button style="margin-left: 8px;margin-right:8px" @click="searchReset">重置</a-button>
+              <a-switch
+                checkedChildren="开启"
+                unCheckedChildren="关闭"
+                v-model="isVerify"
+                @click="value=>handleVerify(value)"
+              ></a-switch>
+              <div
+                style="position:absolute;display:inline-block;line-height:20px;height:22px;margin:8px 5px 4px"
+              >
+                <a-tooltip class="header-item" title="关闭后,员工将不用审核直接成为公司员工">
+                  <a-icon type="info-circle-o" :style="{ fontSize: '20px', color: '#1890ff' }"></a-icon>
+                </a-tooltip>
+              </div>
             </span>
           </a-col>
         </a-row>
@@ -100,13 +114,19 @@
   </a-card>
 </template>
 <script>
+
+import Vue from 'vue'
+import { COMPANY_INFO } from '../../store/mutation-types'
 import { ListMixin } from '../../mixins/ListMixin'
+import { postAction } from '../../api'
 export default {
   name: 'AccountList',
   mixins: [ListMixin],
   components: {},
   data() {
     return {
+      isVerify: true,
+
       auditRadioGroup: 1,
       editmodel: {},  //编辑model
       //弹窗窗口设置
@@ -173,6 +193,10 @@ export default {
       //api 请求参数
       url: {
         list: '/account/applys',
+        verify: '/changeapply', //启用/禁用员工审核
+
+
+
         enable: '/backend-api/user/users/enable', //启用
         disable: '/backend-api/user/users/disable', //禁用
         provincesList: '/backend-api/pca/provinces', //省
@@ -182,8 +206,44 @@ export default {
       },
     }
   },
-  created() { },
+  created() {
+    this.isVerify = Vue.ls.get(COMPANY_INFO).isVerify === 1 ? true : false
+  },
   methods: {
+    //员工审核
+    handleVerify(checked) {
+      this.isVerify = !checked
+      console.log(checked)
+      if (!checked) {
+        this.$confirm({
+          title: '警告',
+          content: `关闭审核，员工将通过扫码直接加入公司，是否确定关闭？`,
+          okText: '确定',
+          okType: 'danger',
+          cancelText: '取消',
+          onOk: () => {
+            this.updateCompanyVerify(checked)
+          },
+          onCancel() {
+          }
+        })
+      } else {
+        this.updateCompanyVerify(checked)
+      }
+    },
+    //更新员工审核功能
+    updateCompanyVerify(checked) {
+      postAction(this.url.verify, { 'isVerify': checked ? 1 : 0 }).then(res => {
+        if (res.success) {
+          this.$message.success('操作成功')
+          this.isVerify = checked
+        } else {
+          this.$message.warning(res.message)
+        }
+      }).finally(() => {
+      })
+
+    },
     //审核弹窗
     handleAudit(record) {
       this.editmodel = record

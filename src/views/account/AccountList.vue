@@ -51,12 +51,12 @@
         </template>
         <!-- 操作 -->
         <span slot="action" slot-scope="text,record">
+          <a @click="handleEdit(record)">详情</a>
+          <a-divider type="vertical" />
           <a v-if="record.status==1" @click="handleEnable(record)">禁用</a>
           <a v-if="record.status==2" @click="handleEnable(record)">启用</a>
           <a-divider type="vertical" />
-          <a @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical" />
-          <a v-if="record.status==2" @click="handleDelete(record)">删除</a>
+          <a @click="handleDelete(record)">删除</a>
         </span>
       </a-table>
     </div>
@@ -89,16 +89,22 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+    <drawer-account ref="modalForm" @ok="modalFormOk"></drawer-account>
   </a-card>
 </template>
 <script>
+
 import { ListMixin } from '../../mixins/ListMixin'
+import DrawerAccount from './modules/DrawerAccount'
+import { getAction, postAction, deleteAction } from '../../api'
 export default {
   name: 'AccountList',
   mixins: [ListMixin],
-  components: {},
+  components: { DrawerAccount },
   data() {
     return {
+      accountrolesData: [],
       auditRadioGroup: 1,
       editmodel: {},  //编辑model
       //弹窗窗口设置
@@ -148,12 +154,7 @@ export default {
           customRender: (text) => text === 1 ? '男' : text === 2 ? '女' : ''
         },
         {
-          title: '备注',
-          dataIndex: 'remark',
-          align: 'center',
-        },
-        {
-          title: '申请时间',
+          title: '加入时间',
           dataIndex: 'applyTime',
           align: 'center',
         },
@@ -170,8 +171,11 @@ export default {
       //api 请求参数
       url: {
         list: '/account/accounts',
-        enable: '/backend-api/user/users/enable', //启用
-        disable: '/backend-api/user/users/disable', //禁用
+        accountroles: '/account/accountroles',//岗位列表
+        enable: '/account/enable', //启用/禁用
+        delete: '/account/accounts', //删除
+
+
         provincesList: '/backend-api/pca/provinces', //省
         cityList: '/backend-api/pca/all-cities',//市
         detail: '/backend-api/user/users/', //详情
@@ -179,7 +183,14 @@ export default {
       },
     }
   },
-  created() { },
+  created() {
+    const param = {}
+    param.pageSize = 10000
+    param.pageNo = 1
+    getAction(this.url.accountroles, param).then((res) => {
+      this.accountrolesData = res.data.records
+    })
+  },
   methods: {
     //审核弹窗
     handleAudit(record) {
@@ -201,7 +212,61 @@ export default {
     //提交
     handleOk() {
       console.log(this.editmodel)
-    }
+    },
+    handleEdit(record) {
+      this.$refs.modalForm.edit(record, this.accountrolesData)
+      this.$refs.modalForm.title = '编辑'
+      this.$refs.modalForm.disableSubmit = false
+    },
+    //禁用-启用
+    handleEnable(record) {
+      this.$confirm({
+        title: '警告',
+        content: `确定要${record.status === 2 ? '启用' : '禁用'}吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          this.loading = true
+          const enable = record.status == 1 ? 2 : 1
+          postAction(this.url.enable, { accountId: record.id, status: enable }).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.loadData()
+            } else {
+              this.$message.warning(res.message)
+            }
+          }).finally(() => {
+            this.loading = false
+          })
+        },
+        onCancel() { }
+      })
+    },
+    //删除
+    handleDelete(record) {
+      this.$confirm({
+        title: '警告',
+        content: `确定要删除吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          this.loading = true
+          deleteAction(this.url.delete, { accountId: record.id }).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.loadData()
+            } else {
+              this.$message.warning(res.message)
+            }
+          }).finally(() => {
+            this.loading = false
+          })
+        },
+        onCancel() { }
+      })
+    },
   },
 }
 
