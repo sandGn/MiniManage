@@ -32,7 +32,6 @@
             </a-tooltip>
             <div>
               <a-progress :percent="90" status="normal" strokeColor="rgb(159, 43, 178)" />
-              <!-- <mini-progress color="rgb(159, 43, 178)" :target="50" :percentage="80" :height="8" /> -->
             </div>
             <template slot="footer">
               <span slot="term">到期时间：</span>
@@ -42,31 +41,42 @@
         </div>
 
         <!-- 教程进度条 -->
-        <div style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8;">
-          <!-- <div class="ant-steps ant-steps-vertical">
-            <div class="ant-steps-item-container">
-              <div class="ant-steps-item-tail">
-                <div class="ant-steps-item-icon">
-                  <span class="ant-steps-icon">1</span>
-                </div>
-              </div>
-            </div>
-          </div> -->
-
-          <a-steps direction="vertical">
-            <a-step title="添加司机" description="This is a description." />123
-            <a-step title="添加车辆" description="This is a description." />
-            <a-step title="设置信息" description="This is a description." />
+        <div
+          class="num-step"
+          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+        >
+          <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
+            <a-step title="添加企业员工" status="process" description="审核用户成为公司员工" />
+            <a-step title="设置岗位" status="process" description="添加司机岗位" />
+            <a-step title="分配员工" status="process" description="设置员工角色为司机" />
+            <a-step title="新增车辆" status="process" description="新增企业车辆,设置车辆项目" />
+            <a-step title="车辆分配" status="process" description="新增企业车辆" />
           </a-steps>
         </div>
+
         <!-- <div
-          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8;text-align:center"
-        >
-          <a-steps class="steps" direction="vertical">
-            <a-step title="分配司机" />
-            <a-step title="添加车辆" />
-          </a-steps>
-        </div>-->
+          class="num-step"
+          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+        >-->
+        <!-- 第一步 -->
+        <!-- <a-steps direction="vertical" :current="-1" @change="onChange">
+            <a-step title="添加企业员工" status="process"  description="审核用户成为公司员工" />    
+        </a-steps>-->
+        <!-- <div class="steps-content">添加企业员工</div> -->
+        <!-- 第二步 -->
+        <!-- <a-steps direction="vertical">
+            <span />
+            <a-step status="process" title="设置岗位" description="添加司机岗位" />
+        </a-steps>-->
+        <!-- <div class="steps-content">设置岗位</div> -->
+        <!-- 第三步 -->
+        <!-- <a-steps direction="vertical">
+            <span />
+            <span />
+            <a-step status="process" title="分配员工" description="设置员工角色为司机" />
+        </a-steps>-->
+        <!-- <div class="steps-content">分配员工</div> -->
+        <!-- </div> -->
       </a-col>
 
       <!-- 食堂模块 -->
@@ -95,6 +105,20 @@
               <span style="color:#52C41A">2020-09-06 00:22:10</span>
             </template>
           </chart-card-index>
+        </div>
+
+        <!-- 食堂教程进度条 -->
+        <div
+          class="num-step"
+          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+        >
+          <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
+            <a-step title="第一步" status="process" description="XXXXXX" />
+            <a-step title="第二步" status="process" description="XXXXXX" />
+            <a-step title="第三步" status="process" description="XXXXXX" />
+            <a-step title="第四步" status="process" description="XXXXXX" />
+            <a-step title="第五步" status="process" description="XXXXXX" />
+          </a-steps>
         </div>
       </a-col>
 
@@ -125,6 +149,20 @@
             </template>
           </chart-card-index>
         </div>
+
+        <!-- 宿舍教程进度条 -->
+        <div
+          class="num-step"
+          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+        >
+          <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
+            <a-step title="第一步" status="process" description="XXXXXX" />
+            <a-step title="第二步" status="process" description="XXXXXX" />
+            <a-step title="第三步" status="process" description="XXXXXX" />
+            <a-step title="第四步" status="process" description="XXXXXX" />
+            <a-step title="第五步" status="process" description="XXXXXX" />
+          </a-steps>
+        </div>
       </a-col>
       <!-- 卫生模块 -->
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
@@ -153,6 +191,20 @@
             </template>
           </chart-card-index>
         </div>
+
+         <!-- 卫生教程进度条 -->
+        <div
+          class="num-step"
+          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+        >
+          <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
+            <a-step title="第一步" status="process" description="XXXXXX" />
+            <a-step title="第二步" status="process" description="XXXXXX" />
+            <a-step title="第三步" status="process" description="XXXXXX" />
+            <a-step title="第四步" status="process" description="XXXXXX" />
+            <a-step title="第五步" status="process" description="XXXXXX" />
+          </a-steps>
+        </div>
       </a-col>
     </a-row>
 
@@ -179,6 +231,8 @@ export default {
     return {
       loading: true,
       companyInfo: [],
+
+      // current: -1,
     }
   },
   created() {
@@ -187,12 +241,13 @@ export default {
       this.loading = !this.loading
     }, 500)
 
-
   },
   filters: {
   },
   methods: {
+    onChange() {
 
+    },
   }
 }
 </script>
@@ -240,4 +295,12 @@ export default {
 //   margin-top: 20px;
 //   display: block;
 // }
+.num-step {
+  padding-left: calc(100% - 80%);
+}
+@media screen and (min-width: 1200px) and (max-width: 1350px) {
+  .num-step {
+    padding-left: 10px;
+  }
+}
 </style>
