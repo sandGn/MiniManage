@@ -13,8 +13,14 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/company',
+    redirect: '/index',
     children: [
+      {
+        path: '/index',
+        name: 'index',
+        component: () => import('@/views/Index'),
+        meta: { title: '首页', keepAlive: true, icon: 'home', permission: ['COMPANY_DETAIL'] },
+      },
       //企业管理
       {
         path: '/company',
