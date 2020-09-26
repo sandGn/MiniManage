@@ -16,7 +16,7 @@
 import CheckItem from './page/CheckItem'
 import MaintenanceItem from './page/MaintenanceItem'
 export default {
-  name: 'AuditList',
+  name: 'CarSetting',
   components: {
     CheckItem,
     MaintenanceItem

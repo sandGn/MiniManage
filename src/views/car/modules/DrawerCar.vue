@@ -42,8 +42,26 @@
           </a-upload>
           <div>推荐尺寸：200*200像素</div>
         </a-form-item>
-        <!-- 车辆颜色 -->
+        <!-- 车辆颜色-单色 -->
         <a-form-item label="车辆颜色" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <color-checkbox-group
+            :defaultValues="['#000000']"
+            v-decorator="[ 'color', validatorRules.color]"
+            style="display: inline-block"
+          >
+            <color-checkbox color="#000000" value="#000000" />
+            <color-checkbox color="#FFFFFF" value="#FFFFFF" />
+            <color-checkbox color="#DFDFDF" value="#DFDFDF" />
+            <color-checkbox color="#FFFF00" value="#FFFF00" />
+            <color-checkbox color="#FF0000" value="#FF0000" />
+            <color-checkbox color="#0000ED" value="#0000ED" />
+            <color-checkbox color="#00FF00" value="#00FF00" />
+            <color-checkbox color="#722ED1" value="#722ED1" />
+            <color-checkbox color="#8B4513" value="#8B4513" />
+          </color-checkbox-group>
+        </a-form-item>
+        <!-- 车辆颜色-全色系 -->
+        <a-form-item label="车辆颜色" :labelCol="labelCol" :wrapperCol="wrapperCol" v-if="false">
           <!-- <colorPicker v-decorator="[ 'color', validatorRules.color]" /> -->
           <div @click="handleShowColor" class="vue-color-div">
             <span
@@ -103,16 +121,15 @@
         </a-form-item>
         <a-form-item label="责任司机分配" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-select
-            mode="multiple"
             placeholder="请选择责任司机"
             v-decorator="[ 'thirdCategories', validatorRules.thirdCategories]"
             :getPopupContainer="(target) => target.parentNode"
           >
             <a-select-option
-              v-for="item in thirdCategoriesData"
+              v-for="item in driverData"
               :key="item.id"
               :value="item.id"
-            >{{item.categoryNameCn}}</a-select-option>
+            >{{item.realName}}</a-select-option>
           </a-select>
         </a-form-item>
       </a-form>
@@ -132,14 +149,22 @@ import moment from 'moment'
 import pick from 'lodash.pick'
 import SDrawer from '../../../components/SDrawer/index'
 import { randomUUID } from '../../../utils/util'
+
+import ColorCheckbox from '../../../components/CheckBox/ColorCheckbox'
+import { getAction } from '../../../api'
+const ColorCheckboxGroup = ColorCheckbox.Group
 export default {
   name: 'DrawerCar',
   components: {    SDrawer,
     // 'sketch-picker': Sketch, 
-    'chrome-picker': Chrome
+    'chrome-picker': Chrome,
+    ColorCheckbox,
+    ColorCheckboxGroup
   },
   data() {
     return {
+      driverData: [],//司机列表数据
+
       color: '#000',
       colorShow: false,
 
@@ -174,11 +199,19 @@ export default {
         areaCode: {},
         address: {},
         email: {},
+      },
+      //api 请求参数
+      url: {
+        drivers: '/car/drivers',//获取司机列表
 
       }
     }
   },
-  created() { },
+  created() {
+    getAction(this.url.drivers, {}).then((res) => {
+      this.driverData = res.data.records
+    })
+  },
   methods: {
     moment,
     handleShowColor() {
@@ -218,6 +251,7 @@ export default {
     },
     //重置数据
     resetData() {
+      this.form.resetFields()
       this.modalSet.visible = true
       this.carImgList = []    //车辆图片
     },

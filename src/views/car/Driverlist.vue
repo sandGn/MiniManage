@@ -47,9 +47,10 @@
         >{{ipagination.current*ipagination.pageSize+index+1-ipagination.pageSize}}</span>
         <!-- 操作 -->
         <span slot="action" slot-scope="text,record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a v-if="record.isEnable==0" @click="handleEnable(record)">启用</a>
+          <a v-if="record.isEnable==1" @click="handleEnable(record)">禁用</a>
           <a-divider type="vertical" />
-          <a @click="handleDelete(record)">删除</a>
+          <a @click="handleEdit(record)">编辑</a>
         </span>
       </a-table>
     </div>
@@ -137,6 +138,9 @@ export default {
       ],
       url: {
         list: '/car/drivers',
+
+        enable: '/car/driverenable', //启用
+        disable: '/car/driverenable', //禁用
       }
     }
   },

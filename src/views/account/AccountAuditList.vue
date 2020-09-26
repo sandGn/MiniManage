@@ -120,7 +120,7 @@ import { COMPANY_INFO } from '../../store/mutation-types'
 import { ListMixin } from '../../mixins/ListMixin'
 import { postAction } from '../../api'
 export default {
-  name: 'AccountList',
+  name: 'AccountAuditList',
   mixins: [ListMixin],
   components: {},
   data() {

@@ -97,6 +97,7 @@
 <script>
 import DrawerCar from './modules/DrawerCar'
 import { ListMixin } from '../../mixins/ListMixin'
+import { postAction, deleteAction } from '../../api'
 //车辆状态
 const carStateMap = {
   1: {
@@ -188,6 +189,9 @@ export default {
       //api 请求参数
       url: {
         list: '/car/cars',
+        delete: '/car/cars',   //删除
+        enable: '/car/enable', //启用
+        disable: '/car/enable', //禁用
       }
     }
   },
@@ -216,92 +220,57 @@ export default {
         this.$refs.modalForm.title = '新增'
         this.$refs.modalForm.disableSubmit = false
       }
-    }
-    //删除车辆
-    // delCar(record) {
-    //   this.$confirm({
-    //     title: '警告',
-    //     content: `真的要删除 ${record.name} 吗?`,
-    //     okText: '删除',
-    //     okType: 'danger',
-    //     cancelText: '取消',
-    //     onOk: () => {
-    //       deleteCar({ carid: record.id })
-    //         .then(res => {
-    //           if (res.succ) {
-    //             this.$message.info(`${record.name} 删除成功`)
-    //             this.$refs.table.refresh(true) //刷新table
-    //           } else {
-    //             this.$message.error(`${record.name} 删除失败,请稍后再试`)
-    //           }
-    //         })
-    //     },
-    //     onCancel() {
-    //       console.log('Cancel')
-    //     }
-    //   })
-    // },
-    //启用禁用车辆
-    // setCarEnable(checked, event) {
-    //   this.$confirm({
-    //     title: '警告',
-    //     content: `确定要 ${checked ? '开启' : '禁用'} ${event.name} 吗?`,
-    //     okText: '确定',
-    //     okType: 'danger',
-    //     cancelText: '取消',
-    //     onOk: () => {
-    //       const obj =
-    //       {
-    //         enable: checked,
-    //         carid: event.id
-    //       }
-    //       updateCarEnable(obj)
-    //         .then(res => {
-    //           if (res.succ) {
-    //             this.$message.info(`${event.name} ${checked ? '开启' : '禁用'} 成功`)
-    //             event.is_enable = checked
-    //           } else {
-    //             this.$message.error(`${event.name} ${checked ? '开启' : '禁用'}失败,请稍后再试`)
-    //           }
-    //           //this.$refs.table.refresh(true) //刷新table
-    //         })
-    //         .catch()
-    //     },
-    //     onCancel() {
-    //     }
-    //   })
-    // },
-    //添加车辆弹窗
-    // showAddCarModal() {
-    //   this.visible = true
-    // },
-    //添加车辆
-    // addCar() {
-    //   const { form: { validateFields } } = this
-    //   this.confirmLoading = true
-    //   validateFields((errors, values) => {
-    //     if (!errors) {
-    //       values['yearcheck_duetime'] = values['yearcheck_duetime'].format('YYYY-MM-DD HH:mm:ss')
-    //       values['insurance_duetime'] = values['insurance_duetime'].format('YYYY-MM-DD HH:mm:ss')
-    //       //console.log(values)
-    //       insertCar(values)
-    //         .then(res => {
-    //           if (res.succ) {
-    //             this.$refs.table.refresh(true) //刷新table                
-    //           } else {
-    //             this.$message.error(`添加失败,请稍后再试`)
-    //           }
-    //           this.visible = false
-    //           this.confirmLoading = false
-    //         })
-    //         .catch(() => {
-    //           this.visible = false
-    //           this.confirmLoading = false
-    //         })
-
-    //     }
-    //   })
-    // }
+    },
+    //禁用-启用
+    handleEnable(record) {
+      this.$confirm({
+        title: '警告',
+        content: `确定要${record.isEnable === 0 ? '启用' : '禁用'}吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          this.loading = true
+          const url = record.isEnable === 0 ? this.url.enable : this.url.disable
+          const enable = record.isEnable === 0 ? 1 : 0
+          postAction(url, { carId: record.id, enable: enable }).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.loadData()
+            } else {
+              this.$message.warning(res.message)
+            }
+          }).finally(() => {
+            this.loading = false
+          })
+        },
+        onCancel() { }
+      })
+    },
+    //删除
+    handleDelete(record) {
+      this.$confirm({
+        title: '警告',
+        content: `确定要删除吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          this.loading = true
+          deleteAction(this.url.delete, { carIds: record.id }).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.loadData()
+            } else {
+              this.$message.warning(res.message)
+            }
+          }).finally(() => {
+            this.loading = false
+          })
+        },
+        onCancel() { }
+      })
+    },
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {

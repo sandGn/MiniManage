@@ -60,6 +60,7 @@ import { ListMixin } from '../../mixins/ListMixin'
 import ModalDuty from './modules/ModalDuty'
 import DrawerDutyPermission from './modules/DrawerDutyPermission'
 export default {
+  name: 'DutyList',
   mixins: [ListMixin],
   components: {
     ModalDuty,

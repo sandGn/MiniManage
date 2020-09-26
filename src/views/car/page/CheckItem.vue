@@ -21,6 +21,17 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <!-- 周期 -->
+          <a-col :lg="4" :sm="12">
+            <a-form-item label="周期">
+              <a-select v-model="queryParam.checkCycle" placeholder="请选择" default-value>
+                <a-select-option value>全部</a-select-option>
+                <a-select-option value="1">每天</a-select-option>
+                <a-select-option value="2">每次出车前</a-select-option>
+                <a-select-option value="3">每次出车后</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
           <!-- 查询、重置 -->
           <a-col :lg="4" :sm="24">
             <span class="table-page-search-submitButtons">
@@ -54,6 +65,8 @@
 
         <!-- 操作 -->
         <span slot="action" slot-scope="text,record">
+          <a @click="handleEnable(record)">{{record.isEnable==1?'禁用':'启用'}}</a>
+          <a-divider type="vertical" />
           <a @click="handleEdit(record)">编辑</a>
           <a-divider type="vertical" />
           <a @click="handleDelete(record)">删除</a>
@@ -62,109 +75,39 @@
     </div>
     <!-- table区域-end -->
     <drawer-check-item ref="modalForm" @ok="modalFormOk"></drawer-check-item>
-
-    <!-- <div>
-      <a-button
-        type="dashed"
-        style="width: 100%;margin-bottom: 16px;"
-        icon="plus"
-        @click="showAddCheckItemModal()"
-      >添加</a-button>
-    </div>
-
-    <s-table
-      ref="table"
-      size="default"
-      rowKey="id"
-      :columns="columns"
-      :data="loadData"
-      showPagination="auto"
-    >
-      <span slot="check_cycle" slot-scope="text">
-        <span :text="text">{{text | cycleFilter}}</span>
-      </span>
-
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="delCheckItem(record)">删除</a>
-        </template>
-      </span>
-    </s-table>
-
-    <a-modal
-      :width="640"
-      :visible="visible"
-      title="添加点检项目"
-      @ok="addCheckItem"
-      @cancel="visible = false"
-      :confirmLoading="confirmLoading"
-    >
-      <a-spin :spinning="confirmLoading">
-        <a-form :form="form">
-          <a-form-item label="点检项目名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input v-decorator="['name', {rules:[{required: true, message: '请填写点检项目名称'}]}]" />
-          </a-form-item>
-
-          <a-form-item label="点检项目内容" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <a-input
-              type="textarea"
-              v-decorator="['description', {rules:[{required: true, message: '请填写点检项目内容'}]}]"
-            />
-          </a-form-item>
-          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="点检周期">
-            <a-select v-decorator="['check_cycle', {rules:[{required: true, message: '请选择点检周期'}]}]">
-              <a-select-option :value="0">每天</a-select-option>
-              <a-select-option :value="1">每次出车前</a-select-option>
-              <a-select-option :value="2">每次出车后</a-select-option>
-            </a-select>
-          </a-form-item>
-
-          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="负责人">
-            <a-select v-decorator="['account_id', {rules:[{required: true, message: '请选择负责人姓名'}]}]">
-              <a-select-option :value="1">员工1</a-select-option>
-              <a-select-option :value="2">员工2</a-select-option>
-            </a-select>
-          </a-form-item>
-
-          <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="是否启用">
-            <a-switch
-              checkedChildren="是"
-              unCheckedChildren="否"
-              v-decorator="['is_enable', {valuePropName: 'checked',initialValue: true}]"
-            />
-          </a-form-item>
-        </a-form>
-      </a-spin>
-    </a-modal>-->
   </a-card>
 </template>
 
 <script>
 import DrawerCheckItem from './modules/DrawerCheckItem'
 import { ListMixin } from '../../../mixins/ListMixin'
+import { deleteAction, postAction } from '../../../api'
 export default {
+  name: 'CheckItem',
   mixins: [ListMixin],
   components: {
     DrawerCheckItem
   },
   data() {
     return {
+      
       //表头
       columns: [
         {
           title: '序号',
-          dataIndex: 'id',
+          scopedSlots: { customRender: 'serialslot' },
           align: 'center',
         },
         {
           title: '点检项目名称',
           align: 'center',
-          dataIndex: 'name'
+          dataIndex: 'checkItemName'
         },
         {
           title: '点检周期',
           dataIndex: 'checkCycle',
           align: 'center',
+          customRender: (text) => text === 1 ? '每天' : text === 2 ? '每次出车前' : text === 3 ? '每次出车后' : ''
         },
         {
           title: '点检内容',
@@ -174,12 +117,6 @@ export default {
         {
           title: '负责人',
           dataIndex: 'responsiblePerson',
-          align: 'center',
-        },
-        {
-          title: '是否启用',
-          dataIndex: 'isEnable',
-          customRender: text => text ? '是' : '否',
           align: 'center',
         },
         {
@@ -198,72 +135,67 @@ export default {
       //api 请求参数
       url: {
         list: '/car/checkitems',
+        delete: '/car/checkitems',
+        enable: '/car/checkitemenable', //启用/禁用
       }
     }
   },
-  //过滤
-  filters: {
-    // cycleFilter(type) {
-    //   return cycleMap[type].text
-    // }
-  },
-  methods: {
-    // //删除点检项目
-    // delCheckItem(record) {
-    //   this.$confirm({
-    //     title: '警告',
-    //     content: `真的要删除 ${record.name} 该项目吗?`,
-    //     okText: '删除',
-    //     okType: 'danger',
-    //     cancelText: '取消',
-    //     onOk: () => {
-    //       deleteCheckItem({ checkitemid: record.id })
-    //         .then(res => {
-    //           //debugger
-    //           if (res.succ) {
-    //             this.$message.info(`${record.name} 删除成功`)
-    //             this.$refs.table.refresh(true) //刷新table
-    //           } else {
-    //             this.$message.error(`${record.name} 删除失败,请稍后再试`)
-    //           }
-    //           this.confirmLoading = false
-    //         })
-    //         .catch(() => {
-    //           this.confirmLoading = false
-    //         })
-    //     },
-    //     onCancel() {
-    //       console.log('Cancel')
-    //     }
-    //   })
-    // },
+  created() {
 
-    // //添加点检项目弹窗
-    // showAddCheckItemModal() {
-    //   this.visible = true
-    // },
-    // //添加点检项目
-    // addCheckItem() {
-    //   const { form: { validateFields } } = this
-    //   this.confirmLoading = true
-    //   validateFields((errors, values) => {
-    //     if (!errors) {
-    //       insertCheckItem(values).then(res => {
-    //         //debugger
-    //         if (res.succ) {
-    //           this.$refs.table.refresh(true) //刷新table
-    //         } else {
-    //           this.$message.error(`添加失败,请稍后再试`)
-    //         }
-    //         this.visible = false
-    //         this.confirmLoading = false
-    //       }).catch(() => {
-    //         this.visible = false
-    //         this.confirmLoading = false
-    //       })
-    //     }
-    //   })
-    // }
+  },
+  //过滤
+  filters: {},
+  methods: {
+    //删除
+    handleDelete(record) {
+      this.$confirm({
+        title: '警告',
+        content: `确定要删除吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          this.loading = true
+          deleteAction(this.url.delete, { checkItemId: record.id }).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.loadData()
+            } else {
+              this.$message.warning(res.message)
+            }
+          }).finally(() => {
+            this.loading = false
+          })
+        },
+        onCancel() { }
+      })
+    },
+    //禁用-启用
+    handleEnable(record) {
+      console.log(record)
+      this.$confirm({
+        title: '警告',
+        content: `确定要${record.isEnable == 1 ? '启用' : '禁用'}吗?`,
+        okText: '确定',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: () => {
+          this.loading = true
+          const enable = record.status == 1 ? 2 : 1
+          postAction(this.url.enable, { checkItemId: record.id, isEnable: enable }).then((res) => {
+            if (res.success) {
+              this.$message.success('操作成功')
+              this.loadData()
+            } else {
+              this.$message.warning(res.message)
+            }
+          }).finally(() => {
+            this.loading = false
+          })
+        },
+        onCancel() { }
+      })
+    },
   }
 }
 </script>

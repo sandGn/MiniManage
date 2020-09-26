@@ -9,13 +9,13 @@
       </div>
       <a-row>
         <a-col :span="8">
-          <head-info title="总数量" :content="allCount"></head-info>
+          <head-info title="总数" :content="allCount"></head-info>
         </a-col>
         <a-col :span="8">
-          <head-info title="已用数量" :content="useCount"></head-info>
+          <head-info title="已用数" :content="useCount"></head-info>
         </a-col>
         <a-col :span="8">
-          <head-info title="可用数量" :content="canCount"></head-info>
+          <head-info title="可用数" :content="canCount"></head-info>
         </a-col>
         <!-- <div class="total"><span>{{ total }}</span></div> -->
       </a-row>

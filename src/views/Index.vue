@@ -1,6 +1,22 @@
 <!-- 企业信息 -->
 <template>
   <div class="page-header-index-wide">
+    <a-card :bordered="false" style="margin-bottom:20px" title="通用设置">
+      <a-row>
+        <a-steps :current="-1" @change="onChange">
+          <a-step title="添加企业员工" description="审核用户成为公司员工" status="finish">
+            <a-icon slot="icon" type="user-add" />
+          </a-step>
+          <a-step title="设置岗位" description="设置企业岗位" status="finish">
+            <a-icon slot="icon" type="setting" />
+          </a-step>
+          <a-step title="分配员工" description="将分配员工到合适的岗位上" status="finish">
+            <a-icon slot="icon" type="cluster" />
+          </a-step>
+        </a-steps>
+      </a-row>
+    </a-card>
+
     <!-- 订购模块信息 -->
     <a-row :gutter="24">
       <!-- *****
@@ -13,6 +29,7 @@
               可用数量         canCount 
               到期时间         endTime  
       ******-->
+
       <!-- 车辆模块 -->
       <a-col :sm="24" :md="12" :xl="6" :style="{ marginBottom: '24px' }">
         <div class="ant-upload-preview">
@@ -43,7 +60,7 @@
         <!-- 教程进度条 -->
         <div
           class="num-step"
-          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+          style="width:100%;height:450px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
         >
           <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
             <a-step title="添加企业员工" status="process" description="审核用户成为公司员工" />
@@ -110,14 +127,13 @@
         <!-- 食堂教程进度条 -->
         <div
           class="num-step"
-          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+          style="width:100%;height:450px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
         >
           <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
-            <a-step title="第一步" status="process" description="XXXXXX" />
-            <a-step title="第二步" status="process" description="XXXXXX" />
-            <a-step title="第三步" status="process" description="XXXXXX" />
+            <a-step title="食材管理" status="process" description="添加食材" />
+            <a-step title="菜色管理" status="process" description="由食材组成菜色" />
+            <a-step title="菜谱管理" status="process" description="制定菜谱搭配" />
             <a-step title="第四步" status="process" description="XXXXXX" />
-            <a-step title="第五步" status="process" description="XXXXXX" />
           </a-steps>
         </div>
       </a-col>
@@ -153,7 +169,7 @@
         <!-- 宿舍教程进度条 -->
         <div
           class="num-step"
-          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+          style="width:100%;height:450px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
         >
           <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
             <a-step title="第一步" status="process" description="XXXXXX" />
@@ -192,10 +208,10 @@
           </chart-card-index>
         </div>
 
-         <!-- 卫生教程进度条 -->
+        <!-- 卫生教程进度条 -->
         <div
           class="num-step"
-          style="width:100%;height:500px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
+          style="width:100%;height:450px;margin-top:20px;border: 1px solid #e8e8e8; background-color: #fafafa;padding-top:20px"
         >
           <a-steps class="steps" direction="vertical" :current="-1" @change="onChange">
             <a-step title="第一步" status="process" description="XXXXXX" />
@@ -207,8 +223,7 @@
         </div>
       </a-col>
     </a-row>
-
-    <!-- Info区域-end -->
+    <!-- 订购模块信息-end -->
   </div>
 </template>
 <script>
@@ -217,6 +232,7 @@ import { DetailMixin } from '../mixins/DetailMixin'
 
 //import Vue from 'vue'
 //import { COMPANY_INFO } from '../store/mutation-types'
+//import ChartCard from '../components/Card/ChartCard'
 import ChartCardIndex from '../components/Card/ChartCardIndex'
 //import MiniProgress from '../../components/Charts/MiniProgress'
 // import DetailList from '../components/tools/DetailList'
@@ -226,7 +242,7 @@ import ChartCardIndex from '../components/Card/ChartCardIndex'
 export default {
   name: 'index',
   mixins: [DetailMixin],
-  components: { ChartCardIndex, },
+  components: { ChartCardIndex },
   data() {
     return {
       loading: true,
@@ -245,7 +261,24 @@ export default {
   filters: {
   },
   methods: {
-    onChange() {
+    onChange(value) {
+      switch (value) {
+        case 0:
+          this.$router.push({ name: 'AccountAuditList' })
+          break
+        case 1:
+          this.$router.push({ name: 'DutyList' })
+          break
+        case 2:
+          this.$router.push({ name: 'AccountList' })
+          break
+        case 3:
+          this.$router.push({ name: 'CarSetting' })
+          break
+        case 4:
+          this.$router.push({ name: 'CarList' })
+          break
+      }
 
     },
   }
@@ -296,11 +329,14 @@ export default {
 //   display: block;
 // }
 .num-step {
-  padding-left: calc(100% - 80%);
+  padding-left: calc(100% - 90%);
 }
 @media screen and (min-width: 1200px) and (max-width: 1350px) {
   .num-step {
     padding-left: 10px;
   }
+}
+.ant-steps-item-description {
+  max-width: 250px;
 }
 </style>
